@@ -1,0 +1,30 @@
+.content__profile {
+    display: flex;
+}
+.content__profile .profile__avatar {
+    margin-right: 20px;
+    width: 200px;
+    height: 200px;
+    overflow: hidden;
+}
+.content__profile .profile__avatar img {
+    width: 100%;
+}
+.content__profile .profile__description{
+    color: aliceblue;
+}
+.content__profile .profile__description .description__name {
+    font-size: 32px;
+    font-family: sans-serif;
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+.content__profile .profile__description a {
+    color: aliceblue;
+}
+.content__profile .profile__description .description__info{
+
+}
+.content__profile .profile__description .description__item {
+    margin-top: 5px;
+}

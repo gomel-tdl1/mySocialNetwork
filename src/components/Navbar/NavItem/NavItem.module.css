@@ -1,0 +1,33 @@
+.navigation__item {
+    margin-top: 20px;
+    transition: all 0.5s ease;
+    margin-left: 5px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.navigation__item:hover {
+    margin-left: 10px;
+}
+.item__image img{
+    height: 24px;
+    margin-right: 5px;
+}
+.item__text a.active{
+    color: brown;
+}
+
+.navigation__item a {
+    text-decoration: none;
+    color: #010038;
+    font-weight: 600;
+}
+
+.navigation__item a:hover {
+    color: darkslategrey;
+}
+
+.setting {
+    margin-top: 50px;
+}

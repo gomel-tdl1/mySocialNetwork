@@ -1,0 +1,8 @@
+.navigation {
+    padding-left: 10px;
+    grid-area: n;
+    background: linear-gradient(-45deg, #FF6E1F, #BFE1FF);
+    height: 520px;
+    border-radius: 0 0 15px 15px;
+}
+

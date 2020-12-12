@@ -1,0 +1,8 @@
+.header {
+    grid-area: h;
+    background: url(assets/depositphotos_109226868-stock-illustration-faces-of-people-seamless-background.jpg) 400px/400px;
+}
+.header img{
+    height: 60px;
+
+}
