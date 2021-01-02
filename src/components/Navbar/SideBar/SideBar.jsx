@@ -1,13 +1,15 @@
 import React from 'react-dom'
 import s from './SideBar.module.css'
+import SideItem from "./SideItem";
 
 export default function SideBar(props) {
+    const sideItems = props.views.map(i => {
+        return <SideItem name={i.name} avatar={i.avatar} key={i.id}/>
+    });
     return (
-      <div className={s.sidebar}>
-          <div className={s.avatar}>
-              <img src={props.state.avatar} alt=""/>
-          </div>
-          <div className={s.name}>{props.state.name}</div>
-      </div>
+        <div className={s.content}>
+            {sideItems}
+        </div>
     );
 }
+

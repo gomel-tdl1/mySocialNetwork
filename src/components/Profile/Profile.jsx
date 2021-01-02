@@ -4,10 +4,8 @@ import ProfileInfo from "./MyProfile/ProfileInfo";
 import MyPostsContainer from "./MyPosts/MyPostsContainer";
 
 function Profile(props) {
-    const state = props.store.getState();
-    const user = state.getProfile(props.id);
-    const userInfo=user.profilePage.profileDescription;
-
+    debugger
+    let description = props.state.profilePage.profileDescription;
     return (
         <main className={s.content}>
             <div className={s.content__image}>
@@ -15,13 +13,13 @@ function Profile(props) {
                      alt=""/>
             </div>
             <ProfileInfo
-                name={`${userInfo.name} ${userInfo.surname}`}
-                avatar={userInfo.avatar}
-                birthday={userInfo.birthday}
-                location={userInfo.location}
-                education={userInfo.education ? userInfo.education : ''}
-                site={userInfo.webSite ? userInfo.webSite : ''}/>
-            <MyPostsContainer user={user} store={props.store} newPostText={props.newPostText}/>
+                name={`${description.name} ${description.surname}`}
+                avatar={description.avatar}
+                birthday={description.birthday}
+                location={`${description.location.city}, ${description.location.country}`}
+                education={description.education ? description.education : ''}
+                site={description.webSite ? description.webSite : ''}/>
+            <MyPostsContainer />
         </main>
     );
 }

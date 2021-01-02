@@ -7,7 +7,7 @@ function MyPosts(props) {
     const newPostElement = React.createRef();
 
     function addPost() {
-        props.addPost();
+        if (props.newPostText) props.addPost();
     }
 
     function newPostText() {
@@ -25,7 +25,7 @@ function MyPosts(props) {
             </div>
             <div className={s.content}>
                 {props.posts.map(post => {
-                    return <Post message={post.message} likesCount={post.likesCount} id={post.id}
+                    return <Post message={post.message} likesCount={post.likesCount} key={post.id}
                                  avatar={props.avatar}/>
                 })}
             </div>

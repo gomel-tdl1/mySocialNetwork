@@ -1,0 +1,49 @@
+.content{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 5px 20px;
+}
+.user{
+    display: flex;
+    align-items: center;
+    position: relative;
+    width: 640px;
+    padding: 0 20px;
+    margin-top: 15px;
+    border: 1px solid #5D91FF;
+    border-radius: 15px;
+    background: linear-gradient(45deg, #C2E9FF, #FF16D2);
+}
+.avatar{
+    width: 100px;
+    height: 100px;
+    overflow: hidden;
+    border-radius: 50%;
+}
+.avatar img{
+    width: 100px;
+}
+
+.description{
+    margin-left: 20px;
+}
+.name{
+
+}
+.status{}
+.location{
+    margin-top: -15px;
+}
+.user .button{
+    position: absolute;
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%);
+    width: 100px;
+    height: 40px;
+    font-size: 17px;
+    font-weight: 700;
+    border-radius: 20px;
+    background-color: #FF9CF7;
+}

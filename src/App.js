@@ -5,21 +5,21 @@ import Navigation from "./components/Navbar/Navigation";
 import Profile from "./components/Profile/Profile";
 import Dialogs from './components/Dialogs/Dialogs'
 import {Route} from "react-router-dom";
+import FriendsContainer from "./components/Friends/FriendsContainer";
 
 const App = (props) => {
-
-    const newPostText=props.state.getProfile(props.id).profilePage.newPostText;
-    const messageText=props.state.getProfile(props.id).dialogsPage.messageText;
 
     return (
         <div className='app-wrapper'>
             <Header/>
-            <Navigation state={props.state} id={props.id}/>
+            <Navigation />
             <div className='content'>
                 <Route path='/profile'
-                       render={() => <Profile id={props.id} store={props.store} newPostText={newPostText}/>}/>
+                       render={() => <Profile state={props.store.getState()}/>}/>
                 <Route path='/dialogs'
-                       render={() => <Dialogs store={props.store} id={props.id} messageText={messageText}/>}/>
+                       render={() => <Dialogs state={props.store.getState()}/>}/>
+                <Route path='/friends'
+                       render={()=> <FriendsContainer />}/>
             </div>
         </div>
     );
