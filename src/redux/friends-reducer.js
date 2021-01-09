@@ -11,16 +11,15 @@ export const removeFriendAC = (id) => ({
 });
 export const setUsersAC = (users) => ({
     type: SET_USERS,
-    users: users
+    users
 });
-
 
 const initialState = {
     users: []
 };
 
 const friendsReducer = (state = initialState, action) => {
-
+debugger
     switch (action.type) {
         case ADD_FRIEND:
             return {

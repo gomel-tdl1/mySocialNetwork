@@ -1,0 +1,8 @@
+.content{
+    position: sticky;
+    top: 9px;
+    right: 0;
+    height: 400px;
+    width: 200px;
+    background-color: #FF0000;
+}
