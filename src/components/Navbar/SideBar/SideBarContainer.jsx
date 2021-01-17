@@ -1,4 +1,3 @@
-import React from 'react-dom'
 import SideBar from "./SideBar";
 import {connect} from "react-redux";
 
