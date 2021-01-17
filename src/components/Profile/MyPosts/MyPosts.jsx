@@ -1,6 +1,7 @@
 import React from 'react';
 import s from './MyPosts.module.css'
 import Post from "./Post/Post";
+import unknown from '../../../assets/images/unknownAvatar.png'
 
 function MyPosts(props) {
 
@@ -26,7 +27,7 @@ function MyPosts(props) {
             <div className={s.content}>
                 {props.posts.map(post => {
                     return <Post message={post.message} likesCount={post.likesCount} key={post.id}
-                                 avatar={props.avatar}/>
+                                 avatar={props.profile.photos.small ? props.profile.photos.small : unknown}/>
                 })}
             </div>
         </div>

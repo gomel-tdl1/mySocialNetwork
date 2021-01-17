@@ -5,11 +5,12 @@ import MessagesContainer from "./Messages/MessagesContainer";
 
 const Dialogs = (props) => {
 
-    const dialogsData = props.state.dialogsPage.dialogsData.map(key => {
+    const dialogsData = props.state.dialogsPage.dialogsData.map(p => {
         return <DialogItem
-            name={key.name}
-            avatar={key.avatar}
-            id={key.id}/>
+            key={p.id}
+            name={p.name}
+            avatar={p.avatar}
+            id={p.id}/>
     });
 
     return (

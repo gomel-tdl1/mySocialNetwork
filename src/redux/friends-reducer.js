@@ -1,25 +1,44 @@
 const ADD_FRIEND = 'ADD_FRIEND';
 const REMOVE_FRIEND = 'REMOVE_FRIEND';
 const SET_USERS = 'SET_USERS';
-export const addFriendAC = (id) => ({
+const SET_CURRENT_PAGE = 'SET_CURRENT_PAGE';
+const SET_TOTAL_USERS_COUNT = 'SET_TOTAL_USERS_COUNT';
+const TOGGLE_IS_FETCHING = 'TOGGLE_IS_FETCHING';
+
+export const addFriend = (id) => ({
     type: ADD_FRIEND,
     userId: id
 });
-export const removeFriendAC = (id) => ({
+export const removeFriend = (id) => ({
     type: REMOVE_FRIEND,
     userId: id
 });
-export const setUsersAC = (users) => ({
+export const setUsers = (users) => ({
     type: SET_USERS,
     users
 });
+export const setTotalUsersCount = (totalCount) => ({
+    type: SET_TOTAL_USERS_COUNT,
+    totalCount
+});
+export const setCurrentPage = (page) => ({
+    type: SET_CURRENT_PAGE,
+    currentPage: page
+});
+export const toggleIsFetching = (isFetching) => ({
+    type: TOGGLE_IS_FETCHING,
+    isFetching
+});
 
 const initialState = {
-    users: []
+    users: [],
+    pageSize: 5,
+    usersTotalCount: 0,
+    currentPage: 1,
+    isFetching:false
 };
 
 const friendsReducer = (state = initialState, action) => {
-debugger
     switch (action.type) {
         case ADD_FRIEND:
             return {
@@ -42,7 +61,22 @@ debugger
         case SET_USERS:
             return {
                 ...state,
-                users: [...state.users, ...action.users]
+                users: action.users
+            };
+        case SET_CURRENT_PAGE:
+            return {
+                ...state,
+                currentPage: action.currentPage
+            };
+        case SET_TOTAL_USERS_COUNT:
+            return {
+                ...state,
+                usersTotalCount: action.totalCount
+            };
+        case TOGGLE_IS_FETCHING:
+            return {
+              ...state,
+              isFetching: action.isFetching
             };
 
         default:

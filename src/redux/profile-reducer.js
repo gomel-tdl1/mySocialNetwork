@@ -1,57 +1,44 @@
 const ADD_POST = 'ADD-POST';
 const POST_MESSAGE_EDIT = 'POST-MESSAGE-EDIT';
-export const addPostActionCreator = (id) => ({
+const SET_USER_PROFILE = 'SET_USER_PROFILE';
+const TOGGLE_IS_FETCHING = 'TOGGLE_IS_FETCHING';
+const SET_USER_STATUS = 'SET_USER_STATUS';
+
+export const addPost = (id) => ({
     type: ADD_POST,
     userId: id
 });
-export const newPostTextActionCreator = (id, text) => ({
+export const updateNewPostText = (text) => ({
     type: POST_MESSAGE_EDIT,
-    userId: id,
     newText: text
 });
+export const setUserProfile = (profile) => ({
+    type: SET_USER_PROFILE,
+    profile
+});
+export const setUserStatus = (status) => ({
+    type: SET_USER_STATUS,
+    status
+});
+export const toggleIsFetching = (isFetching) => ({
+    type: TOGGLE_IS_FETCHING,
+    isFetching
+});
 
-function getBirthdayString(date) {
-    let month = [
-        'January',
-        'February',
-        'March',
-        'April',
-        'May',
-        'June',
-        'Jule',
-        'August',
-        'September',
-        'October',
-        'November',
-        'December'
-    ];
-    return `${date.getDate()} ${month[date.getMonth()]} ${date.getFullYear()}`;
-}
 let initialState = {
-    profileDescription: {
-        name: 'Ilya',
-        surname: 'Taldykin',
-        avatar: 'https://sun2.velcom-by-minsk.userapi.com/c855232/v855232866/106acd/yIVKUNKmgfY.jpg',
-        birthday: getBirthdayString(new Date(2000, 0, 21)),
-        location:{
-            city: 'Gent',
-            country: 'Belgium'
-        },
-        education: 'GSTU',
-        webSite: 'https://gomel-tdl1-shelter.netlify.app'
-    },
     postsData: [],
-    newPostText: ''
+    newPostText: '',
+    profile: null,
+    status: null,
+    isFetching: false
 };
 
 const profileReducer = (state = initialState, action) => {
 
     let stateCopy = {...state};
-    stateCopy.profileDescription = {...state.profileDescription};
     stateCopy.postsData = [...state.postsData];
     switch (action.type) {
         case ADD_POST:
-
             let lastPosts = stateCopy.postsData[stateCopy.postsData.length - 1];
             let nextPostId = lastPosts ? lastPosts.id + 1 : 1;
             let newPost = {
@@ -64,9 +51,16 @@ const profileReducer = (state = initialState, action) => {
             break;
 
         case POST_MESSAGE_EDIT:
+            return {...state, newPostText: action.newText};
 
-            stateCopy.newPostText = action.newText;
-            break;
+        case SET_USER_PROFILE:
+            return {...state, profile: action.profile};
+
+        case TOGGLE_IS_FETCHING:
+            return {...state, isFetching: action.isFetching};
+
+        case SET_USER_STATUS:
+            return {...state, status: action.status};
 
         default:
             break;

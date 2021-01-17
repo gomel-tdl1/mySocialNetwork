@@ -1,7 +1,8 @@
 .post {
     display: flex;
     align-items: center;
-    margin-top: 30px;
+    margin-bottom: 15px;
+    margin-top: 20px;
     position: relative;
 }
 .post__image {

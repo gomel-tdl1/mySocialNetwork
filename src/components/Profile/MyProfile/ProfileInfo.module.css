@@ -11,7 +11,12 @@
     width: 100%;
 }
 .content__profile .profile__description{
-    color: aliceblue;
+    color: #121212;
+    background-color: #FFFF8E;
+    width: 75%;
+    box-sizing: border-box;
+    padding: 10px 15px 15px 15px;
+    border-radius: 15px;
 }
 .content__profile .profile__description .description__name {
     font-size: 32px;
@@ -20,7 +25,8 @@
     margin-bottom: 15px;
 }
 .content__profile .profile__description a {
-    color: aliceblue;
+    color: #121212;
+    text-decoration: underline;
 }
 .content__profile .profile__description .description__info{
 

@@ -14,7 +14,7 @@ body{
 }
 .content{
   grid-area: m;
-  background-color: #ffffff;
+  background-color: #E6E6E6;
   border-radius: 0 0 15px 15px;
   z-index: 0;
 }

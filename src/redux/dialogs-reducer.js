@@ -70,9 +70,7 @@ const dialogsReducer = (state = initialState, action) => {
 
     switch (action.type) {
         case MESSAGE_TEXT_EDIT:
-
-            stateCopy.messageText = action.newText;
-            break;
+            return {...state, messageText:action.newText};
 
         case SEND_MESSAGE:
 

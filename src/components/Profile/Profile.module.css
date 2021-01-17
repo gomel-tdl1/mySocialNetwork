@@ -3,6 +3,8 @@
     overflow: hidden;
     padding: 15px 30px;
     z-index: -4;
+    width: 100%;
+    box-sizing: border-box;
 }
 .content .content__image {
     position: absolute;
