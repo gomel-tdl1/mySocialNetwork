@@ -1,21 +1,20 @@
 import React from 'react';
 import Profile from "./Profile";
-import axios from "axios";
 import {connect} from "react-redux";
 import {setUserProfile, toggleIsFetching, setUserStatus} from "../../redux/profile-reducer";
 import {withRouter} from "react-router-dom";
+import {usersAPI} from "../../API/API";
 
 class ProfileContainer extends React.Component {
     componentDidMount() {
         this.props.toggleIsFetching(true);
         let userId = this.props.match.params.userId ? this.props.match.params.userId : 13857;
-        axios.get(`https://social-network.samuraijs.com/api/1.0/profile/${userId}`).then(response => {
-            this.props.setUserProfile(response.data);
+        usersAPI.getProfile(userId).then(data => {
+            this.props.setUserProfile(data);
         });
-        axios.get(`https://social-network.samuraijs.com/api/1.0/profile/status/${userId}`).then(response => {
+        usersAPI.getStatus(userId).then(data => {
             this.props.toggleIsFetching(false);
-            console.log(response.data);
-            this.props.setUserStatus(response.data);
+            this.props.setUserStatus(data);
         })
     }
 

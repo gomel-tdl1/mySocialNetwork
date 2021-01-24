@@ -4,6 +4,7 @@ const SET_USERS = 'SET_USERS';
 const SET_CURRENT_PAGE = 'SET_CURRENT_PAGE';
 const SET_TOTAL_USERS_COUNT = 'SET_TOTAL_USERS_COUNT';
 const TOGGLE_IS_FETCHING = 'TOGGLE_IS_FETCHING';
+const TOGGLE_BUTTON_IN_PROGRESS = 'TOGGLE_BUTTON_IN_PROGRESS';
 
 export const addFriend = (id) => ({
     type: ADD_FRIEND,
@@ -29,13 +30,19 @@ export const toggleIsFetching = (isFetching) => ({
     type: TOGGLE_IS_FETCHING,
     isFetching
 });
+export const toggleButtonInProgress = (isFetching, userId) => ({
+    type: TOGGLE_BUTTON_IN_PROGRESS,
+    isFetching,
+    userId
+});
 
 const initialState = {
     users: [],
     pageSize: 5,
     usersTotalCount: 0,
     currentPage: 1,
-    isFetching:false
+    isFetching: false,
+    buttonInProgress: []
 };
 
 const friendsReducer = (state = initialState, action) => {
@@ -48,7 +55,6 @@ const friendsReducer = (state = initialState, action) => {
                     return u;
                 })
             };
-
         case REMOVE_FRIEND:
             return {
                 ...state,
@@ -57,7 +63,6 @@ const friendsReducer = (state = initialState, action) => {
                     return u;
                 })
             };
-
         case SET_USERS:
             return {
                 ...state,
@@ -75,8 +80,15 @@ const friendsReducer = (state = initialState, action) => {
             };
         case TOGGLE_IS_FETCHING:
             return {
-              ...state,
-              isFetching: action.isFetching
+                ...state,
+                isFetching: action.isFetching
+            };
+        case TOGGLE_BUTTON_IN_PROGRESS:
+            return {
+                ...state,
+                buttonInProgress: action.isFetching
+                    ? [...state.buttonInProgress, action.userId]
+                    : state.buttonInProgress.filter(id => id !== action.userId)
             };
 
         default:

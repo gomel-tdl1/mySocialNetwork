@@ -3,37 +3,35 @@ import {connect} from "react-redux";
 import {
     addFriend,
     removeFriend,
-    setUsers,
     setCurrentPage,
-    setTotalUsersCount, toggleIsFetching
+    setTotalUsersCount,
+    setUsers,
+    toggleButtonInProgress,
+    toggleIsFetching
 } from "../../redux/friends-reducer";
-import * as axios from "axios";
 import FriendsPresentation from "./FriendsPresentation/FriendsPresentation";
 import s from "./FriendsContainer.module.css";
 import SearchBar from "./SearchBar/SearchBar";
 import Preloader from "../common/Preloader/Preloader";
+import {usersAPI} from "../../API/API";
 
 class FriendsAPIComponent extends React.Component {
     componentDidMount() {
         this.props.toggleIsFetching(true);
-        axios.get(`https://social-network.samuraijs.com/api/1.0/users?count=${this.props.pageSize}&page=${this.props.currentPage}`, {
-            withCredentials: true
-        }).then(response => {
+        usersAPI.getUsers(this.props.pageSize, this.props.currentPage).then(data => {
             this.props.toggleIsFetching(false);
-            this.props.setUsers(response.data.items);
-            this.props.setTotalUsersCount(response.data.totalCount);
+            this.props.setUsers(data.items);
+            this.props.setTotalUsersCount(data.totalCount);
         });
     }
 
     onPageChanged = (pageNumber) => {
         this.props.setCurrentPage(pageNumber);
         this.props.toggleIsFetching(true);
-        axios.get(`https://social-network.samuraijs.com/api/1.0/users?count=${this.props.pageSize}&page=${pageNumber}`, {
-            withCredentials: true
-        }).then(response => {
-            window.get = response;
+        usersAPI.getUsers(this.props.pageSize, pageNumber).then(data => {
+            window.get = data;
             this.props.toggleIsFetching(false);
-            this.props.setUsers(response.data.items, response.data.totalCount);
+            this.props.setUsers(data.items, data.totalCount);
         });
     };
 
@@ -46,6 +44,8 @@ class FriendsAPIComponent extends React.Component {
                         <FriendsPresentation totalUsersCount={this.props.totalCount} pageSize={this.props.pageSize}
                                              currentPage={this.props.currentPage} users={this.props.users}
                                              removeFriend={this.props.removeFriend} addFriend={this.props.addFriend}
+                                             buttonInProgress={this.props.buttonInProgress}
+                                             toggleButtonInProgress={this.props.toggleButtonInProgress}
                                              onPageChanged={this.onPageChanged}/>}
                 </div>
                 <div className={s.search_container}>
@@ -61,7 +61,8 @@ const mapStateToProps = (state) => ({
     totalCount: state.friendsPage.usersTotalCount,
     pageSize: state.friendsPage.pageSize,
     currentPage: state.friendsPage.currentPage,
-    isFetching: state.friendsPage.isFetching
+    isFetching: state.friendsPage.isFetching,
+    buttonInProgress: state.friendsPage.buttonInProgress
 });
 
 const FriendsContainer = connect(mapStateToProps, {
@@ -70,6 +71,7 @@ const FriendsContainer = connect(mapStateToProps, {
     setUsers,
     setCurrentPage,
     setTotalUsersCount,
-    toggleIsFetching
+    toggleIsFetching,
+    toggleButtonInProgress
 })(FriendsAPIComponent);
 export default FriendsContainer;

@@ -2,7 +2,7 @@ import React from 'react'
 import s from './FriendsPresentation.module.css'
 import unknownAvatar from '../../../assets/images/unknownAvatar.png'
 import {NavLink} from "react-router-dom";
-import axios from "axios";
+import {usersAPI} from "../../../API/API";
 
 function FriendsPresentation(props) {
     let pagesCount = Math.ceil(props.totalUsersCount / props.pageSize);
@@ -27,29 +27,20 @@ function FriendsPresentation(props) {
                         <p className={s.location}>{`{u.location.city}, {u.location.country}`}</p>
                         <p className={s.status}>{u.status}</p>
                     </div>
-                    {u.followed ? <button className={s.button} onClick={() => {
-
-                            axios.delete(`https://social-network.samuraijs.com/api/1.0/follow/${u.id}`, {
-                                withCredentials: true,
-                                headers: {
-                                    'API-KEY': '6c3a4efe-d4a8-4320-a83f-28987b239f1b'
-                                }
-                            }).then(response => {
-                                if (response.data.resultCode === 0) props.removeFriend(u.id)
+                    {u.followed ? <button className={s.button} disabled={props.buttonInProgress.some(id => id === u.id)}
+                                          onClick={() => {
+                                              props.toggleButtonInProgress(true, u.id);
+                                              usersAPI.deleteFriend(u.id).then(data => {
+                                                  if (data.resultCode === 0) props.removeFriend(u.id);
+                                                  props.toggleButtonInProgress(false, u.id);
+                                              });
+                                          }}>Delete</button> :
+                        <button className={s.button} disabled={props.buttonInProgress.some(id => id === u.id)} onClick={() => {
+                            props.toggleButtonInProgress(true, u.id);
+                            usersAPI.follow(u.id).then(data => {
+                                if (data.resultCode === 0) props.addFriend(u.id);
+                                props.toggleButtonInProgress(false, u.id);
                             });
-
-                        }}>Delete</button> :
-                        <button className={s.button} onClick={() => {
-
-                            axios.post(`https://social-network.samuraijs.com/api/1.0/follow/${u.id}`, {}, {
-                                withCredentials: true,
-                                headers: {
-                                    'API-KEY': '6c3a4efe-d4a8-4320-a83f-28987b239f1b'
-                                }
-                            }).then(response => {
-                                if (response.data.resultCode === 0) props.addFriend(u.id)
-                            });
-
                         }}>Follow</button>}
                 </div>
             ))}
