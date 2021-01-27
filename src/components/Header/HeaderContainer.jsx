@@ -1,22 +1,13 @@
 import React from 'react';
 import Header from "./Header";
 import {connect} from "react-redux";
-import {setAuthUserData, toggleIsAuth} from "../../redux/auth-reducer";
-import {usersAPI} from "../../API/API";
+import {checkAuthentication} from "../../redux/auth-reducer";
 
 class HeaderContainerComponent extends React.Component {
     componentDidMount() {
-        usersAPI.isAuth().then(data => {
-            debugger
-            let userData = data.data;
-            if(data.resultCode === 0){
-                this.props.toggleIsAuth(true);
-                this.props.setAuthUserData(userData.id, userData.email, userData.login);
-            }else{
-                this.props.toggleIsAuth(false);
-            }
-        });
+        this.props.checkAuthentication();
     }
+
     render() {
         return <Header {...this.props}/>
     }
@@ -24,7 +15,9 @@ class HeaderContainerComponent extends React.Component {
 
 const mapStateToProps = (state) => ({
     isAuth: state.auth.isAuth,
-    login: state.auth.login
+    login: state.auth.login,
+    avatar: state.auth.avatar,
+    userId: state.auth.id
 });
-const HeaderContainer = connect(mapStateToProps, {setAuthUserData, toggleIsAuth})(HeaderContainerComponent);
+const HeaderContainer = connect(mapStateToProps, {checkAuthentication})(HeaderContainerComponent);
 export default HeaderContainer;

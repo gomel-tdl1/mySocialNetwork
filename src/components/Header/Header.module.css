@@ -10,11 +10,27 @@
 }
 .loginBlock{
     margin-right: 20px;
-    height: 30px;
+    height: 40px;
     padding: 0 5px;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 5px;
     background-color: #B2B2B2;
+    cursor: pointer;
+}
+.avatar{
+    width: 35px;
+    height: 35px;
+    overflow: hidden;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+.avatar img{
+    height: 35px;
+}
+.profile{
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }

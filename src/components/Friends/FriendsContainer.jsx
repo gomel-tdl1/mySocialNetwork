@@ -1,38 +1,33 @@
 import React from 'react'
 import {connect} from "react-redux";
-import {
-    addFriend,
-    removeFriend,
-    setCurrentPage,
-    setTotalUsersCount,
-    setUsers,
-    toggleButtonInProgress,
-    toggleIsFetching
-} from "../../redux/friends-reducer";
+import {addFriend, getUsers, getUsersChange, removeFriend} from "../../redux/friends-reducer";
 import FriendsPresentation from "./FriendsPresentation/FriendsPresentation";
 import s from "./FriendsContainer.module.css";
 import SearchBar from "./SearchBar/SearchBar";
 import Preloader from "../common/Preloader/Preloader";
-import {usersAPI} from "../../API/API";
+import withAuthRedirect from "../../hoc/WithAuthRedirect";
+import Dialogs from "../Dialogs/Dialogs";
 
 class FriendsAPIComponent extends React.Component {
     componentDidMount() {
-        this.props.toggleIsFetching(true);
-        usersAPI.getUsers(this.props.pageSize, this.props.currentPage).then(data => {
-            this.props.toggleIsFetching(false);
-            this.props.setUsers(data.items);
-            this.props.setTotalUsersCount(data.totalCount);
-        });
+        this.props.getUsers(this.props.pageSize, this.props.currentPage);
     }
 
     onPageChanged = (pageNumber) => {
-        this.props.setCurrentPage(pageNumber);
-        this.props.toggleIsFetching(true);
-        usersAPI.getUsers(this.props.pageSize, pageNumber).then(data => {
-            window.get = data;
-            this.props.toggleIsFetching(false);
-            this.props.setUsers(data.items, data.totalCount);
-        });
+        this.props.getUsersChange(this.props.pageSize, pageNumber);
+    };
+
+    pagesView = () => {
+        let pagesCount = Math.ceil(this.props.totalCount / this.props.pageSize);
+        let pages;
+        if (this.props.currentPage > 0 && this.props.currentPage <= 3) {
+            pages = [1, 2, 3, 4, 5];
+        } else if (this.props.currentPage <= pagesCount && this.props.currentPage > pagesCount - 2) {
+            pages = [this.props.currentPage - 4, this.props.currentPage - 3, this.props.currentPage - 2, this.props.currentPage - 1, this.props.currentPage]
+        } else {
+            pages = [this.props.currentPage - 2, this.props.currentPage - 1, this.props.currentPage, this.props.currentPage + 1, this.props.currentPage + 2]
+        }
+        return pages;
     };
 
     render() {
@@ -41,12 +36,10 @@ class FriendsAPIComponent extends React.Component {
                 <div className={s.users}>
                     {this.props.isFetching ?
                         <Preloader height='690px'/> :
-                        <FriendsPresentation totalUsersCount={this.props.totalCount} pageSize={this.props.pageSize}
-                                             currentPage={this.props.currentPage} users={this.props.users}
-                                             removeFriend={this.props.removeFriend} addFriend={this.props.addFriend}
+                        <FriendsPresentation currentPage={this.props.currentPage} users={this.props.users}
                                              buttonInProgress={this.props.buttonInProgress}
-                                             toggleButtonInProgress={this.props.toggleButtonInProgress}
-                                             onPageChanged={this.onPageChanged}/>}
+                                             removeFriend={this.props.removeFriend} addFriend={this.props.addFriend}
+                                             onPageChanged={this.onPageChanged} isAuth={this.props.isAuth} pages={this.pagesView()}/>}
                 </div>
                 <div className={s.search_container}>
                     <div className={s.search}><SearchBar/></div>
@@ -56,22 +49,21 @@ class FriendsAPIComponent extends React.Component {
     }
 }
 
+let AuthRedirectComponent = withAuthRedirect(FriendsAPIComponent);
+
 const mapStateToProps = (state) => ({
     users: state.friendsPage.users,
     totalCount: state.friendsPage.usersTotalCount,
     pageSize: state.friendsPage.pageSize,
     currentPage: state.friendsPage.currentPage,
     isFetching: state.friendsPage.isFetching,
-    buttonInProgress: state.friendsPage.buttonInProgress
+    buttonInProgress: state.friendsPage.buttonInProgress,
+    isAuth: state.auth.isAuth
 });
-
 const FriendsContainer = connect(mapStateToProps, {
-    addFriend,
+    getUsers,
+    getUsersChange,
     removeFriend,
-    setUsers,
-    setCurrentPage,
-    setTotalUsersCount,
-    toggleIsFetching,
-    toggleButtonInProgress
-})(FriendsAPIComponent);
+    addFriend
+})(AuthRedirectComponent);
 export default FriendsContainer;

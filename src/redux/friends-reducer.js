@@ -1,3 +1,5 @@
+import {usersAPI} from "../API/API";
+
 const ADD_FRIEND = 'ADD_FRIEND';
 const REMOVE_FRIEND = 'REMOVE_FRIEND';
 const SET_USERS = 'SET_USERS';
@@ -6,11 +8,11 @@ const SET_TOTAL_USERS_COUNT = 'SET_TOTAL_USERS_COUNT';
 const TOGGLE_IS_FETCHING = 'TOGGLE_IS_FETCHING';
 const TOGGLE_BUTTON_IN_PROGRESS = 'TOGGLE_BUTTON_IN_PROGRESS';
 
-export const addFriend = (id) => ({
+export const addFriendSuccess = (id) => ({
     type: ADD_FRIEND,
     userId: id
 });
-export const removeFriend = (id) => ({
+export const removeFriendSuccess = (id) => ({
     type: REMOVE_FRIEND,
     userId: id
 });
@@ -90,9 +92,53 @@ const friendsReducer = (state = initialState, action) => {
                     ? [...state.buttonInProgress, action.userId]
                     : state.buttonInProgress.filter(id => id !== action.userId)
             };
-
         default:
             return {...state};
     }
 };
+
+//getUsersThunkCreator
+export const getUsers = (pageSize, currentPage) => {
+    return (dispatch) => {
+        dispatch(toggleIsFetching(true));
+        usersAPI.getUsers(pageSize, currentPage).then(data => {
+            dispatch(toggleIsFetching(false));
+            dispatch(setUsers(data.items));
+            dispatch(setTotalUsersCount(data.totalCount));
+        });
+    }
+};
+//getUsersChangeThunkCreator
+export const getUsersChange = (pageSize, pageNumber) => {
+    return (dispatch) => {
+        dispatch(setCurrentPage(pageNumber));
+        dispatch(toggleIsFetching(true));
+        usersAPI.getUsers(pageSize, pageNumber).then(data => {
+            dispatch(toggleIsFetching(false));
+            dispatch(setUsers(data.items, data.totalCount));
+        });
+    }
+};
+// removeFriendThunkCreator
+export const removeFriend = (id) => {
+    return (dispatch) => {
+        dispatch(toggleButtonInProgress(true, id));
+        usersAPI.deleteFriend(id).then(data => {
+            if (data.resultCode === 0) dispatch(removeFriendSuccess(id));
+            dispatch(toggleButtonInProgress(false, id));
+        });
+    }
+};
+// addFriendThunkCreator
+export const addFriend = (id) => {
+    return (dispatch) => {
+        dispatch(toggleButtonInProgress(true, id));
+        usersAPI.follow(id).then(data => {
+            if (data.resultCode === 0) dispatch(addFriendSuccess(id));
+            dispatch(toggleButtonInProgress(false, id));
+        });
+    }
+};
+
+
 export default friendsReducer;

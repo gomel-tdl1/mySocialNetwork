@@ -1,24 +1,22 @@
 import React from 'react';
 import s from './Dialogs.module.css';
-import DialogItem from "./Dialog/DialogItem";
 import MessagesContainer from "./Messages/MessagesContainer";
 
 const Dialogs = (props) => {
-
-    const dialogsData = props.state.dialogsPage.dialogsData.map(p => {
-        return <DialogItem
-            key={p.id}
-            name={p.name}
-            avatar={p.avatar}
-            id={p.id}/>
-    });
+    // const dialogsData = props.state.dialogsPage.dialogsData.map(p => {
+    //     return <DialogItem
+    //         key={p.id}
+    //         name={p.name}
+    //         avatar={p.avatar}
+    //         id={p.id}/>
+    // });
 
     return (
         <div className={s.content}>
             <div className={s.dialogs}>
-                {dialogsData}
+                {/*{dialogsData}*/}
             </div>
-            <MessagesContainer />
+            <MessagesContainer/>
         </div>
     );
 };

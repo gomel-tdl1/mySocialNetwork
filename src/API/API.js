@@ -9,27 +9,30 @@ const instance = axios.create({
 });
 
 export const usersAPI = {
-    getUsers(pageSize = 5, pageNumber = 1){
+    getUsers(pageSize = 5, pageNumber = 1) {
         return instance.get(`users?count=${pageSize}&page=${pageNumber}`).then(response => response.data);
     },
-    getProfile(id = 13857){
+    getProfile(id = 13857) {
         return instance.get(`profile/${id}`)
             .then(response => response.data);
     },
-    getStatus(id = 13857){
+    getStatus(id = 13857) {
         return instance.get(`profile/status/${id}`)
             .then(response => response.data);
     },
-    follow(id){
-        return instance.post(`https://social-network.samuraijs.com/api/1.0/follow/${id}`)
+    follow(id) {
+        return instance.post(`follow/${id}`)
             .then(response => response.data);
     },
-    deleteFriend(id){
-        return instance.delete(`https://social-network.samuraijs.com/api/1.0/follow/${id}`)
+    deleteFriend(id) {
+        return instance.delete(`follow/${id}`)
             .then(response => response.data);
-    },
-    isAuth(){
-        return instance.get(`https://social-network.samuraijs.com/api/1.0/auth/me`)
+    }
+};
+
+export const authAPI = {
+    isAuth() {
+        return instance.get(`auth/me`)
             .then(response => response.data);
     }
 };

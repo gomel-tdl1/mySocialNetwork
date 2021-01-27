@@ -1,3 +1,5 @@
+import {usersAPI} from "../API/API";
+
 const ADD_POST = 'ADD-POST';
 const POST_MESSAGE_EDIT = 'POST-MESSAGE-EDIT';
 const SET_USER_PROFILE = 'SET_USER_PROFILE';
@@ -66,5 +68,19 @@ const profileReducer = (state = initialState, action) => {
             break;
     }
     return stateCopy;
+};
+
+//getProfileWithStatusThunkCreator
+export const getProfileWithStatus = (id) =>{
+    return (dispatch) => {
+        dispatch(toggleIsFetching(true));
+        usersAPI.getProfile(id).then(data => {
+            dispatch(setUserProfile(data));
+        });
+        usersAPI.getStatus(id).then(data => {
+            dispatch(toggleIsFetching(false));
+            dispatch(setUserStatus(data));
+        })
+    }
 };
 export default profileReducer;
