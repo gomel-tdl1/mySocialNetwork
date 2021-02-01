@@ -1,6 +1,7 @@
 import React from 'react'
 import s from './ProfileInfo.module.css'
 import unknown from '../../../assets/images/unknownAvatar.png'
+import ProfileStatus from "../ProfileStatus/ProfileStatus";
 
 export default function ProfileInfo(props) {
     let contacts = Object.entries(props.profile.contacts);
@@ -11,11 +12,8 @@ export default function ProfileInfo(props) {
             </div>
             <div className={s.profile__description}>
                 <div className={s.description__name}>{props.profile.fullName}</div>
+                <ProfileStatus />
                 <div className={s.description__info}>
-                    <div className={s.description__item} id='status'>
-                        <span className="key">Status: </span>
-                        <span className="value">{nullChecker(props.status)}</span>
-                    </div>
                     <div className={s.description__item} id='aboutMe'>
                         <span className="key">About me: </span>
                         <span className="value">{nullChecker(props.profile.aboutMe)}</span>

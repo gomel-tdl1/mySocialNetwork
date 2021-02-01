@@ -12,6 +12,24 @@ export const usersAPI = {
     getUsers(pageSize = 5, pageNumber = 1) {
         return instance.get(`users?count=${pageSize}&page=${pageNumber}`).then(response => response.data);
     },
+    follow(id) {
+        return instance.post(`follow/${id}`)
+            .then(response => response.data);
+    },
+    deleteFriend(id) {
+        return instance.delete(`follow/${id}`)
+            .then(response => response.data);
+    },
+    getProfile(id = 13857) {
+        console.warn('Obsolete method. Please use profileAPI object.');
+        return profileAPI.getProfile(id);
+    },
+    getStatus(id = 13857) {
+        console.warn('Obsolete method. Please use profileAPI object.');
+        return profileAPI.getStatus(id);
+    }
+};
+export const profileAPI = {
     getProfile(id = 13857) {
         return instance.get(`profile/${id}`)
             .then(response => response.data);
@@ -20,13 +38,8 @@ export const usersAPI = {
         return instance.get(`profile/status/${id}`)
             .then(response => response.data);
     },
-    follow(id) {
-        return instance.post(`follow/${id}`)
-            .then(response => response.data);
-    },
-    deleteFriend(id) {
-        return instance.delete(`follow/${id}`)
-            .then(response => response.data);
+    updateStatus(status){
+        return instance.put('profile/status', {status: status});
     }
 };
 

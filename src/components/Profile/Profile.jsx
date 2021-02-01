@@ -8,7 +8,7 @@ function Profile(props) {
     if (!props.profile || props.isFetching) return <Preloader height={'500px'}/>;
     return (
         <main className={s.content}>
-            <ProfileInfo profile={props.profile} status={props.status}/>
+            <ProfileInfo profile={props.profile}/>
             <MyPostsContainer/>
         </main>
     );

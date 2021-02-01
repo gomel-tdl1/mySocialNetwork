@@ -3,6 +3,7 @@ import Message from "./Message/Message";
 import {messageTextActionCreator, sendMessageActionCreator} from "../../../redux/dialogs-reducer";
 import Messages from "./Messages";
 import {connect} from "react-redux";
+import {compose} from "redux";
 
 function mapStateToProps(state) {
     return ({
@@ -25,5 +26,6 @@ function mapDispatchToProps(dispatch) {
     });
 }
 
-const MessagesContainer = connect(mapStateToProps, mapDispatchToProps)(Messages);
-export default MessagesContainer;
+export default compose(
+    connect(mapStateToProps, mapDispatchToProps)
+)(Messages);

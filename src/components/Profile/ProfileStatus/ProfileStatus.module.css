@@ -1,0 +1,10 @@
+.status{
+    min-height: 30px;
+    min-width: 30px;
+    max-width: 500px;
+    background-color: #BFE1FF;
+}
+.status div{
+    min-height: 30px;
+    min-width: 30px;
+}

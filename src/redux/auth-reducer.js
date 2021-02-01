@@ -1,4 +1,4 @@
-import {authAPI, usersAPI} from "../API/API";
+import {authAPI, profileAPI, usersAPI} from "../API/API";
 
 const SET_USER_DATA = 'SET_USER_DATA';
 const TOGGLE_IS_AUTH = 'TOGGLE_IS_AUTH';
@@ -60,7 +60,7 @@ export const checkAuthentication = () => {
             if (data.resultCode === 0) {
                 dispatch(toggleIsAuth(true));
                 dispatch(setAuthUserData(userData.id, userData.email, userData.login));
-                usersAPI.getProfile(userData.id).then(data =>{
+                profileAPI.getProfile(userData.id).then(data =>{
                     dispatch(getAvatar(data.photos.small));
                 });
             } else {

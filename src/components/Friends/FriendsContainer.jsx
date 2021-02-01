@@ -6,7 +6,7 @@ import s from "./FriendsContainer.module.css";
 import SearchBar from "./SearchBar/SearchBar";
 import Preloader from "../common/Preloader/Preloader";
 import withAuthRedirect from "../../hoc/WithAuthRedirect";
-import Dialogs from "../Dialogs/Dialogs";
+import {compose} from "redux";
 
 class FriendsAPIComponent extends React.Component {
     componentDidMount() {
@@ -39,7 +39,8 @@ class FriendsAPIComponent extends React.Component {
                         <FriendsPresentation currentPage={this.props.currentPage} users={this.props.users}
                                              buttonInProgress={this.props.buttonInProgress}
                                              removeFriend={this.props.removeFriend} addFriend={this.props.addFriend}
-                                             onPageChanged={this.onPageChanged} isAuth={this.props.isAuth} pages={this.pagesView()}/>}
+                                             onPageChanged={this.onPageChanged} isAuth={this.props.isAuth}
+                                             pages={this.pagesView()}/>}
                 </div>
                 <div className={s.search_container}>
                     <div className={s.search}><SearchBar/></div>
@@ -49,21 +50,21 @@ class FriendsAPIComponent extends React.Component {
     }
 }
 
-let AuthRedirectComponent = withAuthRedirect(FriendsAPIComponent);
-
 const mapStateToProps = (state) => ({
     users: state.friendsPage.users,
     totalCount: state.friendsPage.usersTotalCount,
     pageSize: state.friendsPage.pageSize,
     currentPage: state.friendsPage.currentPage,
     isFetching: state.friendsPage.isFetching,
-    buttonInProgress: state.friendsPage.buttonInProgress,
-    isAuth: state.auth.isAuth
+    buttonInProgress: state.friendsPage.buttonInProgress
 });
-const FriendsContainer = connect(mapStateToProps, {
-    getUsers,
-    getUsersChange,
-    removeFriend,
-    addFriend
-})(AuthRedirectComponent);
-export default FriendsContainer;
+
+export default compose(
+    connect(mapStateToProps, {
+        getUsers,
+        getUsersChange,
+        removeFriend,
+        addFriend
+    }),
+    withAuthRedirect
+)(FriendsAPIComponent);
