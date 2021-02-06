@@ -2,7 +2,6 @@ import {profileAPI} from "../API/API";
 
 const ADD_POST = 'ADD-POST';
 const POST_MESSAGE_EDIT = 'POST_MESSAGE_EDIT';
-const STATUS_MESSAGE_EDIT = 'STATUS_MESSAGE_EDIT';
 const SET_USER_PROFILE = 'SET_USER_PROFILE';
 const TOGGLE_IS_FETCHING = 'TOGGLE_IS_FETCHING';
 const SET_USER_STATUS = 'SET_USER_STATUS';
@@ -14,10 +13,6 @@ export const addPost = (id) => ({
 export const updateNewPostText = (text) => ({
     type: POST_MESSAGE_EDIT,
     newText: text
-});
-export const updateNewStatusText = (text) => ({
-    type: STATUS_MESSAGE_EDIT,
-    newStatusText: text
 });
 export const setUserProfile = (profile) => ({
     type: SET_USER_PROFILE,
@@ -35,7 +30,6 @@ export const toggleIsFetching = (isFetching) => ({
 let initialState = {
     postsData: [],
     newPostText: '',
-    newStatusText: '',
     profile: null,
     status: null,
     isFetching: false
@@ -64,8 +58,6 @@ const profileReducer = (state = initialState, action) => {
             return {...state, isFetching: action.isFetching};
         case SET_USER_STATUS:
             return {...state, status: action.status};
-        case STATUS_MESSAGE_EDIT:
-            return {...state, newStatusText: action.newStatusText};
 
         default:
             break;

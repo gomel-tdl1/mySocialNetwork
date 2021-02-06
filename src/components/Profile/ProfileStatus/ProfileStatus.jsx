@@ -1,14 +1,21 @@
 import React from 'react';
 import {connect} from "react-redux";
 import s from './ProfileStatus.module.css'
-import {updateNewStatusText, updateUserStatus} from "../../../redux/profile-reducer";
+import {updateUserStatus} from "../../../redux/profile-reducer";
 
 class ProfileStatus extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            editMode: false
+            editMode: false,
+            status: this.props.status
         };
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (prevProps.status !== this.props.status) {
+            this.setState({status: this.props.status});
+        }
     }
 
     activateEditMode = () => {
@@ -16,12 +23,12 @@ class ProfileStatus extends React.Component {
     };
     deactivateEditMode = () => {
         this.setState({editMode: false});
-        this.props.updateUserStatus(this.props.newStatusText);
+        this.props.updateUserStatus(this.state.status);
     };
 
     onStatusChanged = (e) => {
         let text = e.target.value;
-        this.props.updateNewStatusText(text);
+        this.setState({status: text});
     };
 
     render() {
@@ -31,7 +38,7 @@ class ProfileStatus extends React.Component {
                     <span>{this.props.status}</span>
                 </div> :
                 <div>
-                    <input autoFocus={true} value={this.props.newStatusText} onBlur={this.deactivateEditMode}
+                    <input autoFocus={true} value={this.state.status} onBlur={this.deactivateEditMode}
                            onChange={this.onStatusChanged}/>
                 </div>
             }
@@ -40,11 +47,9 @@ class ProfileStatus extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
-    newStatusText: state.profilePage.newStatusText,
     status: state.profilePage.status
 });
 
 export default connect(mapStateToProps, {
-    updateNewStatusText,
     updateUserStatus
 })(ProfileStatus);

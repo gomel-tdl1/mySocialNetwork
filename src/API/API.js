@@ -47,5 +47,13 @@ export const authAPI = {
     isAuth() {
         return instance.get(`auth/me`)
             .then(response => response.data);
+    },
+    loginOnSite(email, password, rememberMe, captcha){
+        return instance.post('auth/login', {
+            email,
+            password,
+            rememberMe,
+            captcha
+        });
     }
 };

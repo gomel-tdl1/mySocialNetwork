@@ -69,5 +69,17 @@ export const checkAuthentication = () => {
         });
     };
 };
+//loginOnSiteThunkCreator
+export const loginOnSite = (email, password, rememberMe, captcha) => {
+    return (dispatch) => {
+        authAPI.loginOnSite(email, password, rememberMe, captcha).then(response => {
+            if (response.resultCode === 0) {
+                dispatch(toggleIsAuth(true));
+            } else {
+                dispatch(toggleIsAuth(false));
+            }
+        });
+    };
+};
 
 export default authReducer;
