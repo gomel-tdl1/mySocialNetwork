@@ -17,6 +17,7 @@ body{
   background-color: #E6E6E6;
   border-radius: 0 0 15px 15px;
   z-index: 0;
+  position: relative;
 }
 
 /*# sourceMappingURL=App.css.map */

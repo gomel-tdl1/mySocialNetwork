@@ -2,8 +2,11 @@ import React from 'react';
 import {connect} from "react-redux";
 import s from './ProfileStatus.module.css'
 import {updateUserStatus} from "../../../redux/profile-reducer";
+import {Field, reduxForm} from "redux-form";
+import {maxLengthCreator, required} from '../../../utils/validators/index'
+import {Input} from "../../common/FormsControl/FormsControl";
 
-class ProfileStatus extends React.Component {
+class ProfileStatusContainer extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -21,14 +24,9 @@ class ProfileStatus extends React.Component {
     activateEditMode = () => {
         this.setState({editMode: true});
     };
-    deactivateEditMode = () => {
+    deactivateEditMode = (data) => {
         this.setState({editMode: false});
-        this.props.updateUserStatus(this.state.status);
-    };
-
-    onStatusChanged = (e) => {
-        let text = e.target.value;
-        this.setState({status: text});
+        this.props.updateUserStatus(data.status);
     };
 
     render() {
@@ -37,14 +35,25 @@ class ProfileStatus extends React.Component {
                 <div onDoubleClick={this.activateEditMode}>
                     <span>{this.props.status}</span>
                 </div> :
-                <div>
-                    <input autoFocus={true} value={this.state.status} onBlur={this.deactivateEditMode}
-                           onChange={this.onStatusChanged}/>
-                </div>
+                <ProfileStatusReduxForm onSubmit={this.deactivateEditMode}/>
             }
         </div>);
     };
 }
+
+const maxLength40 = maxLengthCreator(40);
+
+const ProfileStatusForm = (props) => {
+    return (
+        <form className={s.status__edit} onSubmit={props.handleSubmit}>
+            <Field autoFocus={true} name='status' component={Input} validate={[required, maxLength40]}/>
+            <button>Save</button>
+        </form>
+    );
+};
+const ProfileStatusReduxForm = reduxForm({
+    form: 'statusForm'
+})(ProfileStatusForm);
 
 const mapStateToProps = (state) => ({
     status: state.profilePage.status
@@ -52,4 +61,4 @@ const mapStateToProps = (state) => ({
 
 export default connect(mapStateToProps, {
     updateUserStatus
-})(ProfileStatus);
+})(ProfileStatusContainer);

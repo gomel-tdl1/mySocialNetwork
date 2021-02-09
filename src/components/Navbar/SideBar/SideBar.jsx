@@ -4,7 +4,7 @@ import SideItem from "./SideItem";
 
 export default function SideBar(props) {
     const sideItems = props.views.map(i => {
-        return <SideItem name={i.name} avatar={i.avatar} key={i.id}/>
+        if(typeof i !== "number") return <SideItem name={i.fullName} avatar={i.photos.small} key={i.userId}/>
     });
     return (
         <div className={s.content}>

@@ -1,11 +1,11 @@
 import React from 'react';
 import s from "./NavItem.module.css";
-import profile from '../assets/profile.png'
-import news from '../assets/news.png'
-import messages from '../assets/msg.png'
-import friends from '../assets/friends.png'
-import music from '../assets/music.png'
-import setting from '../assets/setting.png'
+import profile from '../../../assets/images/NavBar/profile.png'
+import news from '../../../assets/images/NavBar/news.png'
+import messages from '../../../assets/images/NavBar/msg.png'
+import friends from '../../../assets/images/NavBar/friends.png'
+import music from '../../../assets/images/NavBar/music.png'
+import setting from '../../../assets/images/NavBar/setting.png'
 import {NavLink} from "react-router-dom";
 
 export default function NavItem(props) {

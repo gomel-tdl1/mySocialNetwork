@@ -1,18 +1,14 @@
 import {profileAPI} from "../API/API";
 
 const ADD_POST = 'ADD-POST';
-const POST_MESSAGE_EDIT = 'POST_MESSAGE_EDIT';
 const SET_USER_PROFILE = 'SET_USER_PROFILE';
 const TOGGLE_IS_FETCHING = 'TOGGLE_IS_FETCHING';
 const SET_USER_STATUS = 'SET_USER_STATUS';
 
-export const addPost = (id) => ({
+export const addPost = (id, text) => ({
     type: ADD_POST,
-    userId: id
-});
-export const updateNewPostText = (text) => ({
-    type: POST_MESSAGE_EDIT,
-    newText: text
+    userId: id,
+    newPostText: text
 });
 export const setUserProfile = (profile) => ({
     type: SET_USER_PROFILE,
@@ -29,7 +25,6 @@ export const toggleIsFetching = (isFetching) => ({
 
 let initialState = {
     postsData: [],
-    newPostText: '',
     profile: null,
     status: null,
     isFetching: false
@@ -44,14 +39,11 @@ const profileReducer = (state = initialState, action) => {
             let nextPostId = lastPosts ? lastPosts.id + 1 : 1;
             let newPost = {
                 id: nextPostId,
-                message: stateCopy.newPostText,
+                message: action.newPostText,
                 likesCount: 0
             };
             stateCopy.postsData.push(newPost);
-            stateCopy.newPostText = '';
             break;
-        case POST_MESSAGE_EDIT:
-            return {...state, newPostText: action.newText};
         case SET_USER_PROFILE:
             return {...state, profile: action.profile};
         case TOGGLE_IS_FETCHING:

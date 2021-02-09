@@ -1,13 +1,8 @@
-const MESSAGE_TEXT_EDIT = 'MESSAGE-TEXT-EDIT';
 const SEND_MESSAGE = 'SEND_MESSAGE';
-export const messageTextActionCreator = (id, text) => ({
-    type: MESSAGE_TEXT_EDIT,
-    userId: id,
-    newText: text
-});
-export const sendMessageActionCreator = (id) => ({
+export const sendMessageActionCreator = (id, text) => ({
     type: SEND_MESSAGE,
-    userId: id
+    userId: id,
+    newMessageBody: text
 });
 
 const initialState = {
@@ -60,7 +55,6 @@ const initialState = {
             ]
         }
     ],
-    messageText: ''
 };
 
 const dialogsReducer = (state = initialState, action) => {
@@ -69,9 +63,6 @@ const dialogsReducer = (state = initialState, action) => {
     stateCopy.messagesData = [...state.messagesData];
 
     switch (action.type) {
-        case MESSAGE_TEXT_EDIT:
-            return {...state, messageText:action.newText};
-
         case SEND_MESSAGE:
 
             stateCopy.messagesData[action.userId].data = [...state.messagesData[action.userId].data];
@@ -79,11 +70,10 @@ const dialogsReducer = (state = initialState, action) => {
             let nextMesId = lastMes ? lastMes.id + 1 : 1;
             let newMes = {
                 id: nextMesId,
-                message: stateCopy.messageText,
+                message: action.newMessageBody,
                 who: 'me'
             };
             stateCopy.messagesData.find(p => action.userId === p.interlocutorId).data.push(newMes);
-            stateCopy.messageText = '';
             break;
 
         default:

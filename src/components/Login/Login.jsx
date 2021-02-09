@@ -1,37 +1,61 @@
 import React from 'react'
 import {Field, reduxForm} from "redux-form";
+import {Input} from "../common/FormsControl/FormsControl";
+import {required} from "../../utils/validators";
+import s from './Login.module.css'
+import {connect} from "react-redux";
+import {loginOnSite} from "../../redux/auth-reducer";
 
 function LoginForm(props) {
     return (
-            <form onSubmit={props.handleSubmit}>
+        <form onSubmit={props.handleSubmit} className={s.form}>
+            <div>
+                <Field component={Input} name={'email'} validate={[required]} placeholder={'Email...'}/>
+            </div>
+            <div>
+                <Field component={Input} name={'password'} validate={[required]} type={'password'}
+                       placeholder={'Password...'}/>
+            </div>
+            <div className={s.remember}>
+                <Field component={'input'} name={'rememberMe'} type="checkbox"/> Remember me
+            </div>
+            {props.isCaptchaNeed && (<div className={s.captcha}>
                 <div>
-                    <Field component={'input'} name={'login'} placeholder={'Login'}/>
+                    <img src={props.captcha} alt=""/>
                 </div>
                 <div>
-                    <Field component={'input'} name={'password'} type={'password'} placeholder={'Password'}/>
+                    <Field component={Input} name={'captcha'} validate={[required]} placeholder={'Text on image...'}/>
                 </div>
-                <div>
-                    <Field component={'input'} name={'remember'} type="checkbox"/> Remember me
-                </div>
-                <div>
-                    <button>Login</button>
-                </div>
-            </form>
+            </div>)}
+            <div>
+                <button disabled={props.isAuth}>Login</button>
+            </div>
+        </form>
     );
 }
 
 const LoginReduxForm = reduxForm({
     form: 'login'
-})(LoginForm)
+})(LoginForm);
 
-export default function Login(props) {
-    const onSubmit = (formData) => {
-        console.log(formData)
+class Login extends React.Component{
+    onSubmit = (data) => {
+        this.props.loginOnSite(data.email, data.password, data.rememberMe, data.captcha)
+    };
+    render() {
+        return (
+            <div className={s.content}>
+                <h1>LOGIN</h1>
+                <LoginReduxForm onSubmit={this.onSubmit} {...this.props}/>
+            </div>
+        );
     }
-    return (
-        <div>
-            <h1>LOGIN</h1>
-            <LoginReduxForm onSubmit={onSubmit}/>
-        </div>
-    );
 }
+
+const mapStateToProps = (state) => ({
+    isAuth: state.auth.isAuth,
+    captcha: state.auth.captcha,
+    isCaptchaNeed: state.auth.isCaptchaNeed,
+});
+
+export default connect(mapStateToProps, {loginOnSite})(Login);

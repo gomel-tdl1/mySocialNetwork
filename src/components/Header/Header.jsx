@@ -2,6 +2,7 @@ import React from 'react';
 import s from './Header.module.css'
 import {NavLink} from "react-router-dom";
 import unknown from '../../assets/images/unknownAvatar.png'
+import logout from '../../assets/images/Header/log-out.png'
 
 function Header(props) {
     return (
@@ -15,6 +16,9 @@ function Header(props) {
                         <div className={s.avatar}><img src={props.avatar ? props.avatar : unknown} alt=""/></div>
                         <p>{props.login}</p>
                     </NavLink>}
+                <div className={s.logout} onClick={props.logout}>
+                    <img src={logout} alt="Oops"/>
+                </div>
             </div>
         </header>
     );
