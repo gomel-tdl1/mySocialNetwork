@@ -1,4 +1,6 @@
 import {authAPI, profileAPI} from "../API/API";
+import {stopSubmit} from "redux-form";
+import {Redirect} from "react-router-dom";
 
 const SET_USER_DATA = 'SET_USER_DATA';
 const TOGGLE_IS_AUTH = 'TOGGLE_IS_AUTH';
@@ -79,7 +81,7 @@ const authReducer = (state = initialState, action) => {
 //checkAuthenticationThunkCreator
 export const checkAuthentication = () => {
     return (dispatch) => {
-        authAPI.isAuth().then(data => {
+        return authAPI.isAuth().then(data => {
             let userData = data.data;
             if (data.resultCode === 0) {
                 dispatch(toggleIsAuth(true));
@@ -97,6 +99,7 @@ export const checkAuthentication = () => {
 export const loginOnSite = (email, password, rememberMe, captcha) => {
     return (dispatch) => {
         authAPI.loginOnSite(email, password, rememberMe, captcha).then(response => {
+            const actionStopSubmit = stopSubmit('login', { _error: response.data.messages[0] });
             if (response.data.resultCode === 0) {
                 dispatch(checkAuthentication());
                 dispatch(toggleIsCaptchaNeed(false));
@@ -106,6 +109,9 @@ export const loginOnSite = (email, password, rememberMe, captcha) => {
                 authAPI.getCaptcha().then(data => {
                    dispatch(setCaptcha(data.url))
                 });
+                dispatch(actionStopSubmit);
+            }else if(response.data.resultCode === 1){
+                dispatch(actionStopSubmit);
             }
         });
     };

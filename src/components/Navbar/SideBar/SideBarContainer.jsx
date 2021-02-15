@@ -1,11 +1,11 @@
 import SideBar from "./SideBar";
 import {connect} from "react-redux";
 import React from 'react';
-import {getUserProfile} from "../../../redux/sidebar-reducer";
+import {getUsersProfile} from "../../../redux/sidebar-reducer";
 
 class SideBarContainerComponent extends React.Component {
     componentDidMount() {
-        this.props.getUserProfile(this.props.views);
+        this.props.getUsersProfile(this.props.views);
     }
 
     render() {
@@ -24,5 +24,5 @@ function mapStateToProps(state) {
     });
 }
 
-const SideBarContainer = connect(mapStateToProps, {getUserProfile})(SideBarContainerComponent);
+const SideBarContainer = connect(mapStateToProps, {getUsersProfile})(SideBarContainerComponent);
 export default SideBarContainer;

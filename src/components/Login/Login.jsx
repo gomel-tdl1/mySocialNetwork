@@ -19,6 +19,9 @@ function LoginForm(props) {
             <div className={s.remember}>
                 <Field component={'input'} name={'rememberMe'} type="checkbox"/> Remember me
             </div>
+            <div className={s.formSummaryError}>
+                {props.error}
+            </div>
             {props.isCaptchaNeed && (<div className={s.captcha}>
                 <div>
                     <img src={props.captcha} alt=""/>

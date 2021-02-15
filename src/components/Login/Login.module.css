@@ -12,7 +12,17 @@
     flex-direction: column;
     align-items: center;
     height: 150px;
+    position: relative;
 }
+.formSummaryError{
+    position: absolute;
+    top: 10%;
+    left: 0;
+    transform: translateX(-105%);
+    color: red;
+    text-align: center;
+}
+
 .remember{
     margin-left: -10px;
 }

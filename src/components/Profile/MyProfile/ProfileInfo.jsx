@@ -1,7 +1,7 @@
 import React from 'react'
 import s from './ProfileInfo.module.css'
 import unknown from '../../../assets/images/unknownAvatar.png'
-import ProfileStatus from "../ProfileStatus/ProfileStatus";
+import ProfileStatusWithHooks from "../ProfileStatus/ProfileStatusWithHooks";
 
 export default function ProfileInfo(props) {
     let contacts = Object.entries(props.profile.contacts);
@@ -12,7 +12,7 @@ export default function ProfileInfo(props) {
             </div>
             <div className={s.profile__description}>
                 <div className={s.description__name}>{props.profile.fullName}</div>
-                <ProfileStatus />
+                <ProfileStatusWithHooks/>
                 <div className={s.description__info}>
                     <div className={s.description__item} id='aboutMe'>
                         <span className="key">About me: </span>
@@ -32,7 +32,7 @@ export default function ProfileInfo(props) {
                             const value = item[1];
                             return (
                                 <div key={key}>
-                                    <span className="key">{key[0].toUpperCase()+key.slice(1)}: </span>
+                                    <span className="key">{key[0].toUpperCase() + key.slice(1)}: </span>
                                     <a href={nullChecker(value)}><span className="value">{nullChecker(value)}</span></a>
                                 </div>
                             );
