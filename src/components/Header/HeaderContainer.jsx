@@ -3,18 +3,22 @@ import Header from "./Header";
 import {connect} from "react-redux";
 import {logout} from "../../redux/auth-reducer";
 import {compose} from "redux";
+import {
+    getAuthAvatarSelector,
+    getAuthLoginSelector,
+    getAuthUserIdSelector,
+    getIsAuthSelector
+} from "../../redux/selectors/auth-selectors";
 
-class HeaderContainerComponent extends React.Component {
-    render() {
-        return <Header {...this.props}/>
-    }
-}
+const HeaderContainerComponent = (props) => {
+    return <Header {...props}/>
+};
 
 const mapStateToProps = (state) => ({
-    isAuth: state.auth.isAuth,
-    login: state.auth.login,
-    avatar: state.auth.avatar,
-    userId: state.auth.id
+    isAuth: getIsAuthSelector(state),
+    login: getAuthLoginSelector(state),
+    avatar: getAuthAvatarSelector(state),
+    userId: getAuthUserIdSelector(state)
 });
 
 export default compose(

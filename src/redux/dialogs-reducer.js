@@ -1,84 +1,70 @@
-const SEND_MESSAGE = 'SEND_MESSAGE';
-export const sendMessageActionCreator = (id, text) => ({
-    type: SEND_MESSAGE,
-    userId: id,
-    newMessageBody: text
+import {dialogsAPI} from "../API/API";
+
+const UPDATE_DIALOGS_DATA = 'UPDATE_DIALOGS_DATA';
+const UPDATE_MESSAGES_DATA = 'UPDATE_MESSAGES_DATA';
+
+export const updateDialogsData = (dialogsData) => ({
+    type: UPDATE_DIALOGS_DATA,
+    dialogsData
+});
+export const updateMessagesData = (messagesData) => ({
+    type: UPDATE_MESSAGES_DATA,
+    messagesData
 });
 
 const initialState = {
-    dialogsData: [
-        {
-            id: 3,
-            name: 'Daniel',
-            avatar: 'https://sun9-73.userapi.com/impf/c854532/v854532471/ae0b/lhY7_MxVUv4.jpg?size=1536x2048&quality=96&proxy=1&sign=5db7444735ab438f75e0f92aa8acf5f0'
-        },
-        {
-            id: 1,
-            name: 'Arina',
-            avatar: 'https://sun2.velcom-by-minsk.userapi.com/impf/c858224/v858224468/afea6/domWQuDwnNY.jpg?size=1679x1700&quality=96&proxy=1&sign=4c5145fd05ad6fbca9bb07c6ac725b81'
-        },
-        {
-            id: 4,
-            name: 'Andrew',
-            avatar: 'https://sun9-63.userapi.com/impg/lRByKuTJM11ForAGkU0TkmhidmM2miJNpsIqpg/qZr6hYoueIQ.jpg?size=1612x2160&quality=96&proxy=1&sign=0896a68ac3e0c606ef42847b822e8f2c'
-        }
-    ],
-    messagesData: [
-        {
-            interlocutorId: 1,
-            data: [
-                {id: 1, message: 'Hi!', who: 'you'},
-                {id: 2, message: 'Hello!', who: 'me'},
-                {id: 3, message: 'La lala?', who: 'you'},
-                {id: 4, message: 'oyy?', who: 'me'}
-            ]
-        },
-        {
-            interlocutorId: 3,
-            data: [
-                {id: 1, message: 'Hi!', who: 'you'}
-            ]
-        },
-        {
-            interlocutorId: 4,
-            data: [
-                {id: 1, message: 'Hi!', who: 'you'},
-                {id: 2, message: 'Hello!', who: 'me'},
-                {id: 3, message: 'La lala?', who: 'you'}
-            ]
-        },
-        {
-            interlocutorId: 5,
-            data: [
-                {id: 1, message: 'Hi!', who: 'you'},
-                {id: 2, message: 'Hello!', who: 'me'}
-            ]
-        }
-    ],
+    dialogsData: [],
+    messagesData: []
 };
 
 const dialogsReducer = (state = initialState, action) => {
-
-    let stateCopy = {...state};
-    stateCopy.messagesData = [...state.messagesData];
-
     switch (action.type) {
-        case SEND_MESSAGE:
-
-            stateCopy.messagesData[action.userId].data = [...state.messagesData[action.userId].data];
-            const lastMes = stateCopy.messagesData[action.userId].data[stateCopy.messagesData[action.userId].data.length - 1];
-            let nextMesId = lastMes ? lastMes.id + 1 : 1;
-            let newMes = {
-                id: nextMesId,
-                message: action.newMessageBody,
-                who: 'me'
+        case UPDATE_DIALOGS_DATA:
+            return {
+                ...state,
+                dialogsData: action.dialogsData
             };
-            stateCopy.messagesData.find(p => action.userId === p.interlocutorId).data.push(newMes);
-            break;
+        case UPDATE_MESSAGES_DATA:
+            return {
+                ...state,
+                messagesData: action.messagesData
+            };
 
         default:
-            break;
+            return {...state};
     }
-    return stateCopy;
 };
+
+function trueResultCode(data) {
+    return data.resultCode === 0;
+}
+
+//startChattingThunkCreator
+export const startChatting = (userId) => (dispatch) => {
+    dialogsAPI.startChatting(userId).then(data => {
+        if (trueResultCode(data)) {
+            dispatch(getDialogs());
+        }
+    });
+};
+//getDialogsThunkCreator
+export const getDialogs = () => (dispatch) => {
+    dialogsAPI.getDialogs().then(data => {
+        dispatch(updateDialogsData(data));
+    });
+};
+//getMessagesThunkCreator
+export const getMessages = (friendId) => (dispatch) => {
+    dialogsAPI.getMessages(friendId).then(data => {
+        dispatch(updateMessagesData(data.items));
+    });
+};
+//sendMessageThunkCreator
+export const sendMessage = (friendId, messageText) => (dispatch) => {
+    dialogsAPI.sendMessage(friendId, messageText).then(data => {
+        dispatch(getMessages(friendId));
+    });
+};
+
+
 export default dialogsReducer;

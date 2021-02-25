@@ -15,7 +15,7 @@ import Preloader from "./components/common/Preloader/Preloader";
 function App(props) {
     useEffect(() => {
         props.initializeApp();
-    });
+    }, [props.initializeApp]);
 
     if (!props.initialized) return <Preloader height={'700px'}/>
     return (
@@ -25,7 +25,7 @@ function App(props) {
             <div className='content'>
                 <Route path='/profile/:userId?'
                        render={() => <ProfileContainer/>}/>
-                <Route path='/dialogs'
+                <Route path='/dialogs/:friendId?'
                        render={() => <DialogsContainer/>}/>
                 <Route path='/friends'
                        render={() => <FriendsContainer/>}/>

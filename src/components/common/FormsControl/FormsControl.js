@@ -6,9 +6,11 @@ const FormControl = ({input, meta, element, ...props}) => {
     return (
         <div className={`${s.formControl} ${hasError && s.error}`}>
             <div className={hasError ? s.error : undefined}>
-                {React.createElement(element,{...input, ...props})}
+                {React.createElement(element, {...input, ...props})}
             </div>
-            {hasError && <span>{meta.error}</span>}
+            {hasError && (element !== 'textarea') ?
+                <span>{meta.error}</span> :
+                hasError && <div>{meta.error}</div>}
         </div>
     );
 };

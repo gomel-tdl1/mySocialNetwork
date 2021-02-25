@@ -5,6 +5,7 @@ import {required} from "../../utils/validators";
 import s from './Login.module.css'
 import {connect} from "react-redux";
 import {loginOnSite} from "../../redux/auth-reducer";
+import {getCaptchaSelector, getIsAuthSelector, getIsCaptchaNeedSelector} from "../../redux/selectors/auth-selectors";
 
 function LoginForm(props) {
     return (
@@ -41,24 +42,23 @@ const LoginReduxForm = reduxForm({
     form: 'login'
 })(LoginForm);
 
-class Login extends React.Component{
-    onSubmit = (data) => {
-        this.props.loginOnSite(data.email, data.password, data.rememberMe, data.captcha)
+const Login = (props) => {
+    const onSubmit = (data) => {
+        props.loginOnSite(data.email, data.password, data.rememberMe, data.captcha)
     };
-    render() {
-        return (
-            <div className={s.content}>
-                <h1>LOGIN</h1>
-                <LoginReduxForm onSubmit={this.onSubmit} {...this.props}/>
-            </div>
-        );
-    }
-}
+
+    return (
+        <div className={s.content}>
+            <h1>LOGIN</h1>
+            <LoginReduxForm onSubmit={onSubmit} {...props}/>
+        </div>
+    );
+};
 
 const mapStateToProps = (state) => ({
-    isAuth: state.auth.isAuth,
-    captcha: state.auth.captcha,
-    isCaptchaNeed: state.auth.isCaptchaNeed,
+    isAuth: getIsAuthSelector(state),
+    captcha: getCaptchaSelector(state),
+    isCaptchaNeed: getIsCaptchaNeedSelector(state)
 });
 
 export default connect(mapStateToProps, {loginOnSite})(Login);

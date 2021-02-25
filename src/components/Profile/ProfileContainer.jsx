@@ -1,44 +1,40 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import Profile from "./Profile";
 import {connect} from "react-redux";
 import {getUserProfile, getUserStatus} from "../../redux/profile-reducer";
 import {withRouter} from "react-router-dom";
-import withAuthRedirect from "../../hoc/WithAuthRedirect";
 import {compose} from "redux";
+import {getIsFetchingSelector, getProfileSelector} from "../../redux/selectors/profile-selectors";
+import {getAuthUserIdSelector} from "../../redux/selectors/auth-selectors";
+import ProfileGuest from "./ProfileGuest";
+import {startChatting} from "../../redux/dialogs-reducer";
 
-class ProfileContainerComponent extends React.Component {
-    componentDidMount() {
-        let userId = this.props.match.params.userId ? this.props.match.params.userId : this.props.authUserId;
-        this.props.getUserProfile(userId);
-        this.props.getUserStatus(userId);
-    }
-
-    componentDidUpdate(prevProps, prevState) {
-        if (prevProps.match.params.userId !== this.props.match.params.userId) {
-            let userId = this.props.match.params.userId ? this.props.match.params.userId : 13857;
-            this.props.getUserProfile(userId);
-            this.props.getUserStatus(userId);
+const ProfileContainerComponent = (props) => {
+    useEffect(() => {
+        let userId = props.match.params.userId ? props.match.params.userId : props.authUserId;
+        if(userId){
+            props.getUserProfile(userId);
+            props.getUserStatus(userId);
         }
-    }
+    }, [props.match.params.userId]);
 
-    render() {
-        return (
-            <Profile {...this.props}/>
-        );
-    }
-}
+    if (!props.authUserId && !props.match.params.userId) return <ProfileGuest/>;
+    return (
+        <Profile {...props}/>
+    );
+};
 
 const mapStateToProps = (state) => ({
-    profile: state.profilePage.profile,
-    authUserId: state.auth.id,
-    isFetching: state.profilePage.isFetching,
+    profile: getProfileSelector(state),
+    authUserId: getAuthUserIdSelector(state),
+    isFetching: getIsFetchingSelector(state),
 });
 
 export default compose(
     connect(mapStateToProps, {
         getUserProfile,
-        getUserStatus
+        getUserStatus,
+        startChatting
     }),
-    withRouter,
-    withAuthRedirect
+    withRouter
 )(ProfileContainerComponent);

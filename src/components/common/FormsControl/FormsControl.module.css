@@ -14,3 +14,6 @@
     top: 50%;
     transform: translate(105%, -50%);
 }
+.error div{
+    color: red;
+}

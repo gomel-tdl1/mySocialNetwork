@@ -38,17 +38,37 @@ export const profileAPI = {
         return instance.get(`profile/status/${id}`)
             .then(response => response.data);
     },
-    updateStatus(status){
+    updateStatus(status) {
         return instance.put('profile/status', {status: status});
     }
 };
+export const dialogsAPI = {
+    getDialogs() {
+        return instance.get('dialogs')
+            .then(response => response.data);
+    },
+    startChatting(userId) {
+        return instance.put(`dialogs/${userId}`)
+            .then(response => response.data);
+    },
+    getMessages(friendId, page = 1, count = 8) {
+        return instance.get(`dialogs/${friendId}/messages`)
+            .then(response => response.data);
+    },
+    sendMessage(friendId, message) {
+        return instance.post(`dialogs/${friendId}/messages`, {
+            body: message
+        }).then(response => response.data);
+    }
+};
+
 
 export const authAPI = {
     isAuth() {
         return instance.get(`auth/me`)
             .then(response => response.data);
     },
-    loginOnSite(email, password, rememberMe = false, captcha){
+    loginOnSite(email, password, rememberMe = false, captcha) {
         return instance.post('auth/login', {
             email,
             password,
@@ -56,10 +76,10 @@ export const authAPI = {
             captcha
         });
     },
-    logout(){
+    logout() {
         return instance.delete('auth/login');
     },
-    getCaptcha(){
+    getCaptcha() {
         return instance.get('security/get-captcha-url').then(response => response.data);
     }
 };

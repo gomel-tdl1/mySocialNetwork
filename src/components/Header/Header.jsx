@@ -4,7 +4,7 @@ import {NavLink} from "react-router-dom";
 import unknown from '../../assets/images/unknownAvatar.png'
 import logout from '../../assets/images/Header/log-out.png'
 
-function Header(props) {
+const Header = React.memo((props) => {
     return (
         <header className={s.header}>
             <img
@@ -22,6 +22,6 @@ function Header(props) {
             </div>
         </header>
     );
-}
+});
 
 export default Header;

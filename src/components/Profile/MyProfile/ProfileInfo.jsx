@@ -2,14 +2,34 @@ import React from 'react'
 import s from './ProfileInfo.module.css'
 import unknown from '../../../assets/images/unknownAvatar.png'
 import ProfileStatusWithHooks from "../ProfileStatus/ProfileStatusWithHooks";
+import {NavLink} from "react-router-dom";
 
 export default function ProfileInfo(props) {
     let contacts = Object.entries(props.profile.contacts);
+    let isFriend = (+props.userId !== props.authUserId) && (props.userId !== undefined);
+
+    function nullChecker(item) {
+        return item ? item : '';
+    }
+
+    const handleWriteMessageClick = () => {
+        props.startChatting(props.userId);
+    };
+
     return (
         <div className={s.content__profile}>
-            <div className={s.profile__avatar}>
-                <img src={props.profile.photos.large ? props.profile.photos.large : unknown} alt=""/>
+            <div className={s.avatar_container}>
+                <div className={s.profile__avatar}>
+                    <img src={props.profile.photos.large ? props.profile.photos.large : unknown} alt=""/>
+                </div>
+                {isFriend &&
+                <div className={s.message_button}>
+                    <NavLink to={'/dialogs'}>
+                        <button onClick={handleWriteMessageClick}>Write message</button>
+                    </NavLink>
+                </div>}
             </div>
+
             <div className={s.profile__description}>
                 <div className={s.description__name}>{props.profile.fullName}</div>
                 <ProfileStatusWithHooks/>
@@ -42,8 +62,4 @@ export default function ProfileInfo(props) {
             </div>
         </div>
     );
-}
-
-function nullChecker(item) {
-    return item ? item : '';
 }
