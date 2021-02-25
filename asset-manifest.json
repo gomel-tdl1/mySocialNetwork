@@ -1,0 +1,27 @@
+{
+  "files": {
+    "main.css": "/mySocialNetwork/static/css/main.cadb84dc.chunk.css",
+    "main.js": "/mySocialNetwork/static/js/main.4f0a902c.chunk.js",
+    "main.js.map": "/mySocialNetwork/static/js/main.4f0a902c.chunk.js.map",
+    "runtime-main.js": "/mySocialNetwork/static/js/runtime-main.63bbcb9b.js",
+    "runtime-main.js.map": "/mySocialNetwork/static/js/runtime-main.63bbcb9b.js.map",
+    "static/js/2.b3e8f57b.chunk.js": "/mySocialNetwork/static/js/2.b3e8f57b.chunk.js",
+    "static/js/2.b3e8f57b.chunk.js.map": "/mySocialNetwork/static/js/2.b3e8f57b.chunk.js.map",
+    "static/js/3.166f7c23.chunk.js": "/mySocialNetwork/static/js/3.166f7c23.chunk.js",
+    "static/js/3.166f7c23.chunk.js.map": "/mySocialNetwork/static/js/3.166f7c23.chunk.js.map",
+    "index.html": "/mySocialNetwork/index.html",
+    "static/css/main.cadb84dc.chunk.css.map": "/mySocialNetwork/static/css/main.cadb84dc.chunk.css.map",
+    "static/js/2.b3e8f57b.chunk.js.LICENSE.txt": "/mySocialNetwork/static/js/2.b3e8f57b.chunk.js.LICENSE.txt",
+    "static/media/Header.module.css": "/mySocialNetwork/static/media/depositphotos_109226868-stock-illustration-faces-of-people-seamless-background.596883b4.jpg",
+    "static/media/friends.6c1d7ae6.png": "/mySocialNetwork/static/media/friends.6c1d7ae6.png",
+    "static/media/preloader.a6aed550.gif": "/mySocialNetwork/static/media/preloader.a6aed550.gif",
+    "static/media/setting.83b1bc35.png": "/mySocialNetwork/static/media/setting.83b1bc35.png",
+    "static/media/unknownAvatar.9dbf4970.png": "/mySocialNetwork/static/media/unknownAvatar.9dbf4970.png"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.63bbcb9b.js",
+    "static/js/2.b3e8f57b.chunk.js",
+    "static/css/main.cadb84dc.chunk.css",
+    "static/js/main.4f0a902c.chunk.js"
+  ]
+}
