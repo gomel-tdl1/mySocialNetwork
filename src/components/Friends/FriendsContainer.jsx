@@ -5,7 +5,6 @@ import FriendsPresentation from "./FriendsPresentation/FriendsPresentation";
 import s from "./FriendsContainer.module.css";
 import SearchBar from "./SearchBar/SearchBar";
 import Preloader from "../common/Preloader/Preloader";
-import withAuthRedirect from "../../hoc/WithAuthRedirect";
 import {compose} from "redux";
 import {
     getButtonInProgressSelector,
@@ -15,8 +14,9 @@ import {
     getTotalCountSelector,
     getUsersSelector
 } from "../../redux/selectors/users-selectors";
+import {getIsAuthSelector} from "../../redux/selectors/auth-selectors";
 
-const FriendsAPIComponent = (props) => {
+const FriendsContainer = (props) => {
     useEffect(() => {
         props.getUsers(props.pageSize, props.currentPage);
     }, [props.getUsers]);
@@ -62,7 +62,8 @@ const mapStateToProps = (state) => ({
     pageSize: getPageSizeSelector(state),
     currentPage: getCurrentPageSelector(state),
     isFetching: getIsFetchingSelector(state),
-    buttonInProgress: getButtonInProgressSelector(state)
+    buttonInProgress: getButtonInProgressSelector(state),
+    isAuth: getIsAuthSelector(state)
 });
 
 export default compose(
@@ -72,4 +73,4 @@ export default compose(
         removeFriend,
         addFriend
     })
-)(FriendsAPIComponent);
+)(FriendsContainer);

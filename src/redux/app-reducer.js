@@ -1,6 +1,6 @@
 import {checkAuthentication} from "./auth-reducer";
 
-const INITIALIZED_SUCCESS = 'INITIALIZED_SUCCESS';
+const INITIALIZED_SUCCESS = 'app-reducer/INITIALIZED_SUCCESS';
 
 export const initializedSuccess = () => ({
     type: INITIALIZED_SUCCESS
@@ -23,10 +23,9 @@ const appReducer = (state = initialState, action) => {
     }
 };
 
-export const initializeApp = () => (dispatch) => {
-    dispatch(checkAuthentication()).then(() => {
-        dispatch(initializedSuccess())
-    });
+export const initializeApp = () => async (dispatch) => {
+    await dispatch(checkAuthentication());
+    dispatch(initializedSuccess());
 };
 
 export default appReducer;

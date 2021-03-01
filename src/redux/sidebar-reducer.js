@@ -1,6 +1,6 @@
 import {profileAPI} from "../API/API";
 
-const TRANSFORM_ID_TO_PROFILE = 'TRANSFORM_ID_TO_PROFILE';
+const TRANSFORM_ID_TO_PROFILE = 'sidebar-reducer/TRANSFORM_ID_TO_PROFILE';
 
 const transformIdToProfile = (data) => ({
     type: TRANSFORM_ID_TO_PROFILE,
@@ -17,16 +17,14 @@ const initialState = {
 
 //getUserProfileThunkCreator
 export const getUsersProfile = (ids) => {
-    return (dispatch) => {
+    return async (dispatch) => {
         let profiles = [...ids];
-        Promise.all(profiles.map(id =>{
+        let data = await Promise.all(profiles.map(id => {
             return profileAPI.getProfile(id).then(data => {
                 return data;
             });
-        })).then((data) => {
-            dispatch(transformIdToProfile(data));
-        });
-
+        }));
+        dispatch(transformIdToProfile(data));
     }
 };
 

@@ -1,6 +1,6 @@
 import React from 'react'
 import {Field, reduxForm} from "redux-form";
-import {Input} from "../common/FormsControl/FormsControl";
+import {createField, Input} from "../common/FormsControl/FormsControl";
 import {required} from "../../utils/validators";
 import s from './Login.module.css'
 import {connect} from "react-redux";
@@ -10,16 +10,13 @@ import {getCaptchaSelector, getIsAuthSelector, getIsCaptchaNeedSelector} from ".
 function LoginForm(props) {
     return (
         <form onSubmit={props.handleSubmit} className={s.form}>
-            <div>
-                <Field component={Input} name={'email'} validate={[required]} placeholder={'Email...'}/>
-            </div>
-            <div>
-                <Field component={Input} name={'password'} validate={[required]} type={'password'}
-                       placeholder={'Password...'}/>
-            </div>
-            <div className={s.remember}>
-                <Field component={'input'} name={'rememberMe'} type="checkbox"/> Remember me
-            </div>
+                {createField(Input, 'email', [required], 'Email...')}
+                {createField(Input, 'password', [required], 'Password...', {
+                    type: 'password'
+                })}
+                {createField('input', 'rememberMe', null, null, {
+                    type: 'checkbox',
+                }, 'Remember me', s.remember)}
             <div className={s.formSummaryError}>
                 {props.error}
             </div>
@@ -28,7 +25,7 @@ function LoginForm(props) {
                     <img src={props.captcha} alt=""/>
                 </div>
                 <div>
-                    <Field component={Input} name={'captcha'} validate={[required]} placeholder={'Text on image...'}/>
+                    {createField(Input, 'captcha', [required], 'Text on image...')}
                 </div>
             </div>)}
             <div>

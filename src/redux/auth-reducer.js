@@ -1,12 +1,11 @@
 import {authAPI, profileAPI} from "../API/API";
 import {stopSubmit} from "redux-form";
-import {Redirect} from "react-router-dom";
 
-const SET_USER_DATA = 'SET_USER_DATA';
-const TOGGLE_IS_AUTH = 'TOGGLE_IS_AUTH';
-const GET_AVATAR_FOR_HEADER = 'GET_AVATAR_FOR_HEADER';
-const SET_CAPTCHA = 'SET_CAPTCHA';
-const TOGGLE_IS_CAPTCHA_NEED = 'TOGGLE_IS_CAPTCHA_NEED'
+const SET_USER_DATA = 'auth-reducer/SET_USER_DATA';
+const TOGGLE_IS_AUTH = 'auth-reducer/TOGGLE_IS_AUTH';
+const GET_AVATAR_FOR_HEADER = 'auth-reducer/GET_AVATAR_FOR_HEADER';
+const SET_CAPTCHA = 'auth-reducer/SET_CAPTCHA';
+const TOGGLE_IS_CAPTCHA_NEED = 'auth-reducer/TOGGLE_IS_CAPTCHA_NEED';
 
 export const setAuthUserData = (id, email, login, isAuth) => ({
     type: SET_USER_DATA,
@@ -80,51 +79,46 @@ const authReducer = (state = initialState, action) => {
 
 //checkAuthenticationThunkCreator
 export const checkAuthentication = () => {
-    return (dispatch) => {
-        return authAPI.isAuth().then(data => {
-            let userData = data.data;
-            if (data.resultCode === 0) {
-                dispatch(toggleIsAuth(true));
-                dispatch(setAuthUserData(userData.id, userData.email, userData.login, true));
-                profileAPI.getProfile(userData.id).then(data => {
-                    dispatch(getAvatar(data.photos.small));
-                });
-            } else {
-                dispatch(toggleIsAuth(false));
-            }
-        });
-    };
+    return async (dispatch) => {
+        let data = await authAPI.isAuth();
+        let userData = data.data;
+        if (data.resultCode === 0) {
+            dispatch(toggleIsAuth(true));
+            dispatch(setAuthUserData(userData.id, userData.email, userData.login, true));
+            let profileData = await profileAPI.getProfile(userData.id);
+            dispatch(getAvatar(profileData.photos.small));
+        } else {
+            dispatch(toggleIsAuth(false));
+        }
+    }
 };
 //loginOnSiteThunkCreator
 export const loginOnSite = (email, password, rememberMe, captcha) => {
-    return (dispatch) => {
-        authAPI.loginOnSite(email, password, rememberMe, captcha).then(response => {
-            const actionStopSubmit = stopSubmit('login', { _error: response.data.messages[0] });
-            if (response.data.resultCode === 0) {
-                dispatch(checkAuthentication());
-                dispatch(toggleIsCaptchaNeed(false));
-                dispatch(setCaptcha(null));
-            } else if (response.data.resultCode === 10) {
-                dispatch(toggleIsCaptchaNeed(true));
-                authAPI.getCaptcha().then(data => {
-                   dispatch(setCaptcha(data.url))
-                });
-                dispatch(actionStopSubmit);
-            }else if(response.data.resultCode === 1){
-                dispatch(actionStopSubmit);
-            }
-        });
+    return async (dispatch) => {
+        let response = await authAPI.loginOnSite(email, password, rememberMe, captcha);
+        const actionStopSubmit = stopSubmit('login', {_error: response.data.messages[0]});
+        if (response.data.resultCode === 0) {
+            dispatch(checkAuthentication());
+            dispatch(toggleIsCaptchaNeed(false));
+            dispatch(setCaptcha(null));
+        } else if (response.data.resultCode === 10) {
+            dispatch(toggleIsCaptchaNeed(true));
+            let data = await authAPI.getCaptcha();
+            dispatch(setCaptcha(data.url));
+            dispatch(actionStopSubmit);
+        } else if (response.data.resultCode === 1) {
+            dispatch(actionStopSubmit);
+        }
     };
 };
 //logoutThunkCreator
 export const logout = () => {
-    return (dispatch) => {
-        authAPI.logout().then(response => {
-            if (response.data.resultCode === 0) {
-                dispatch(checkAuthentication());
-                dispatch(setAuthUserData(null, null, null, false));
-            }
-        });
+    return async (dispatch) => {
+        let response = await authAPI.logout();
+        if (response.data.resultCode === 0) {
+            dispatch(checkAuthentication());
+            dispatch(setAuthUserData(null, null, null, false));
+        }
     };
 };
 

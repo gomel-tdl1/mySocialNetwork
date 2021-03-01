@@ -81,7 +81,6 @@
     margin-bottom: 10px;
 }
 .pages span{
-    cursor: pointer;
     width: 40px;
     height: 40px;
     background-color: #FFFF8E;
@@ -91,5 +90,6 @@
     border-radius: 50%;
 }
 .pages span:hover{
-    color: #353811;
+    color: #FF6E1F;
+    cursor: pointer;
 }

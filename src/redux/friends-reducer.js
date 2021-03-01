@@ -1,12 +1,12 @@
 import {usersAPI} from "../API/API";
 
-const ADD_FRIEND = 'ADD_FRIEND';
-const REMOVE_FRIEND = 'REMOVE_FRIEND';
-const SET_USERS = 'SET_USERS';
-const SET_CURRENT_PAGE = 'SET_CURRENT_PAGE';
-const SET_TOTAL_USERS_COUNT = 'SET_TOTAL_USERS_COUNT';
-const TOGGLE_IS_FETCHING = 'TOGGLE_IS_FETCHING';
-const TOGGLE_BUTTON_IN_PROGRESS = 'TOGGLE_BUTTON_IN_PROGRESS';
+const ADD_FRIEND = 'friends-reducer/ADD_FRIEND';
+const REMOVE_FRIEND = 'friends-reducer/REMOVE_FRIEND';
+const SET_USERS = 'friends-reducer/SET_USERS';
+const SET_CURRENT_PAGE = 'friends-reducer/SET_CURRENT_PAGE';
+const SET_TOTAL_USERS_COUNT = 'friends-reducer/SET_TOTAL_USERS_COUNT';
+const TOGGLE_IS_FETCHING = 'friends-reducer/TOGGLE_IS_FETCHING';
+const TOGGLE_BUTTON_IN_PROGRESS = 'friends-reducer/TOGGLE_BUTTON_IN_PROGRESS';
 
 export const addFriendSuccess = (id) => ({
     type: ADD_FRIEND,
@@ -99,44 +99,44 @@ const friendsReducer = (state = initialState, action) => {
 
 //getUsersThunkCreator
 export const getUsers = (pageSize, currentPage) => {
-    return (dispatch) => {
+    return async (dispatch) => {
         dispatch(toggleIsFetching(true));
-        usersAPI.getUsers(pageSize, currentPage).then(data => {
-            dispatch(toggleIsFetching(false));
-            dispatch(setUsers(data.items));
-            dispatch(setTotalUsersCount(data.totalCount));
-        });
+        let data = await usersAPI.getUsers(pageSize, currentPage);
+        dispatch(toggleIsFetching(false));
+        dispatch(setUsers(data.items));
+        dispatch(setTotalUsersCount(data.totalCount));
     }
 };
 //getUsersChangeThunkCreator
 export const getUsersChange = (pageSize, pageNumber) => {
-    return (dispatch) => {
+    return async (dispatch) => {
         dispatch(setCurrentPage(pageNumber));
         dispatch(toggleIsFetching(true));
-        usersAPI.getUsers(pageSize, pageNumber).then(data => {
-            dispatch(toggleIsFetching(false));
-            dispatch(setUsers(data.items, data.totalCount));
-        });
+        let data = await usersAPI.getUsers(pageSize, pageNumber)
+        dispatch(toggleIsFetching(false));
+        dispatch(setUsers(data.items, data.totalCount));
     }
 };
+
+async function addRemoveFlow(dispatch, userId, apiMethod, actionCreator) {
+    dispatch(toggleButtonInProgress(true, userId));
+    let data = await apiMethod(userId);
+    if (data.resultCode === 0) dispatch(actionCreator(userId));
+    dispatch(toggleButtonInProgress(false, userId));
+}
+
 // removeFriendThunkCreator
 export const removeFriend = (id) => {
-    return (dispatch) => {
-        dispatch(toggleButtonInProgress(true, id));
-        usersAPI.deleteFriend(id).then(data => {
-            if (data.resultCode === 0) dispatch(removeFriendSuccess(id));
-            dispatch(toggleButtonInProgress(false, id));
-        });
+    return async (dispatch) => {
+        let apiMethod = usersAPI.deleteFriend.bind(usersAPI);
+        addRemoveFlow(dispatch, id, apiMethod, removeFriendSuccess);
     }
 };
 // addFriendThunkCreator
 export const addFriend = (id) => {
-    return (dispatch) => {
-        dispatch(toggleButtonInProgress(true, id));
-        usersAPI.follow(id).then(data => {
-            if (data.resultCode === 0) dispatch(addFriendSuccess(id));
-            dispatch(toggleButtonInProgress(false, id));
-        });
+    return async (dispatch) => {
+        let apiMethod = usersAPI.follow.bind(usersAPI);
+        addRemoveFlow(dispatch, id, apiMethod, addFriendSuccess);
     }
 };
 

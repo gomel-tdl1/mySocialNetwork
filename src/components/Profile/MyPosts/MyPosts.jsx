@@ -2,8 +2,8 @@ import React from 'react';
 import s from './MyPosts.module.css'
 import Post from "./Post/Post";
 import unknown from '../../../assets/images/unknownAvatar.png'
-import {Field, reduxForm} from "redux-form";
-import {Textarea} from "../../common/FormsControl/FormsControl";
+import {reduxForm} from "redux-form";
+import {createField, Textarea} from "../../common/FormsControl/FormsControl";
 import {maxLengthCreator, required} from "../../../utils/validators";
 
 const MyPosts = React.memo((props) => {
@@ -31,8 +31,7 @@ const maxLength100 = maxLengthCreator(100);
 const MyPostForm = (props) => {
     return (
         <form className={s.main} onSubmit={props.handleSubmit}>
-            <Field component={Textarea} name={'newPostText'} validate={[required, maxLength100]} cols="70" rows="5"
-                   placeholder='Your news...'/>
+            {createField(Textarea, 'newPostText', [required, maxLength100], 'Your news...')}
             <button>Send</button>
         </form>
     );
