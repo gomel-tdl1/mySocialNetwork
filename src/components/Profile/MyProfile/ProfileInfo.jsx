@@ -1,8 +1,8 @@
 import React from 'react'
 import s from './ProfileInfo.module.css'
 import unknown from '../../../assets/images/unknownAvatar.png'
-import ProfileStatusWithHooks from "../ProfileStatus/ProfileStatusWithHooks";
 import {NavLink} from "react-router-dom";
+import ProfileStatusWithHooksContainer from "../ProfileStatus/ProfileStatusWithHooksContainer";
 
 export default function ProfileInfo(props) {
     let contacts = Object.entries(props.profile.contacts);
@@ -32,7 +32,7 @@ export default function ProfileInfo(props) {
 
             <div className={s.profile__description}>
                 <div className={s.description__name}>{props.profile.fullName}</div>
-                <ProfileStatusWithHooks/>
+                <ProfileStatusWithHooksContainer/>
                 <div className={s.description__info}>
                     <div className={s.description__item} id='aboutMe'>
                         <span className="key">About me: </span>

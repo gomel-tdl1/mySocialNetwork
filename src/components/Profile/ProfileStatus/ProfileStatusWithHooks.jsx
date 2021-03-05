@@ -1,8 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {connect} from "react-redux";
 import s from './ProfileStatus.module.css'
-import {updateUserStatus} from "../../../redux/profile-reducer";
-import {getStatusSelector} from "../../../redux/selectors/profile-selectors";
 
 const ProfileStatusWithHooks = (props) => {
     let [editMode, setEditMode] = useState(false);
@@ -19,7 +16,7 @@ const ProfileStatusWithHooks = (props) => {
     const updateStatus = (e) => {
         setStatus(e.target.value);
     };
-    
+
     useEffect(() => {
         setStatus(props.status);
     }, [props.status]);
@@ -33,12 +30,4 @@ const ProfileStatusWithHooks = (props) => {
         }
     </div>);
 };
-
-
-const mapStateToProps = (state) => ({
-    status: getStatusSelector(state)
-});
-
-export default connect(mapStateToProps, {
-    updateUserStatus
-})(ProfileStatusWithHooks);
+export default ProfileStatusWithHooks;
