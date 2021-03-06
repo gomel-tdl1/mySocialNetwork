@@ -15,27 +15,15 @@ import {
     getUsersSelector
 } from "../../redux/selectors/users-selectors";
 import {getIsAuthSelector} from "../../redux/selectors/auth-selectors";
+import {withRouter} from "react-router-dom";
 
 const FriendsContainer = (props) => {
     useEffect(() => {
-        props.getUsers(props.pageSize, props.currentPage);
+        props.getUsers(props.pageSize, props.match.params.currentPage);
     }, [props.getUsers]);
 
     const onPageChanged = (pageNumber) => {
         props.getUsersChange(props.pageSize, pageNumber);
-    };
-
-    const pagesView = () => {
-        let pagesCount = Math.ceil(props.totalCount / props.pageSize);
-        let pages;
-        if (props.currentPage > 0 && props.currentPage <= 3) {
-            pages = [1, 2, 3, 4, 5];
-        } else if (props.currentPage <= pagesCount && props.currentPage > pagesCount - 2) {
-            pages = [props.currentPage - 4, props.currentPage - 3, props.currentPage - 2, props.currentPage - 1, props.currentPage]
-        } else {
-            pages = [props.currentPage - 2, props.currentPage - 1, props.currentPage, props.currentPage + 1, props.currentPage + 2]
-        }
-        return pages;
     };
 
     return (
@@ -43,11 +31,7 @@ const FriendsContainer = (props) => {
             <div className={s.users}>
                 {props.isFetching ?
                     <Preloader height='690px'/> :
-                    <FriendsPresentation currentPage={props.currentPage} users={props.users}
-                                         buttonInProgress={props.buttonInProgress}
-                                         removeFriend={props.removeFriend} addFriend={props.addFriend}
-                                         onPageChanged={onPageChanged} isAuth={props.isAuth}
-                                         pages={pagesView()}/>}
+                    <FriendsPresentation {...props} onPageChanged={onPageChanged}/>}
             </div>
             <div className={s.search_container}>
                 <div className={s.search}><SearchBar/></div>
@@ -72,5 +56,6 @@ export default compose(
         getUsersChange,
         removeFriend,
         addFriend
-    })
+    }),
+    withRouter
 )(FriendsContainer);

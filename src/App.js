@@ -28,7 +28,7 @@ function App(props) {
                        render={() => <ProfileContainer/>}/>
                 <Route path='/dialogs/:friendId?'
                        render={() => <DialogsContainer/>}/>
-                <Route path='/friends'
+                <Route path='/friends/:currentPage?'
                        render={() => <FriendsContainer/>}/>
                 <Route path='/login'
                        render={() => <Login/>}/>

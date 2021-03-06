@@ -42,7 +42,7 @@ const initialState = {
     users: [],
     pageSize: 5,
     usersTotalCount: 0,
-    currentPage: 1,
+    // currentPage: 1,
     isFetching: false,
     buttonInProgress: []
 };
@@ -70,11 +70,11 @@ const friendsReducer = (state = initialState, action) => {
                 ...state,
                 users: action.users
             };
-        case SET_CURRENT_PAGE:
-            return {
-                ...state,
-                currentPage: action.currentPage
-            };
+        // case SET_CURRENT_PAGE:
+        //     return {
+        //         ...state,
+        //         currentPage: action.currentPage
+        //     };
         case SET_TOTAL_USERS_COUNT:
             return {
                 ...state,
@@ -110,9 +110,9 @@ export const getUsers = (pageSize, currentPage) => {
 //getUsersChangeThunkCreator
 export const getUsersChange = (pageSize, pageNumber) => {
     return async (dispatch) => {
-        dispatch(setCurrentPage(pageNumber));
+        // dispatch(setCurrentPage(pageNumber));
         dispatch(toggleIsFetching(true));
-        let data = await usersAPI.getUsers(pageSize, pageNumber)
+        let data = await usersAPI.getUsers(pageSize, pageNumber);
         dispatch(toggleIsFetching(false));
         dispatch(setUsers(data.items, data.totalCount));
     }
