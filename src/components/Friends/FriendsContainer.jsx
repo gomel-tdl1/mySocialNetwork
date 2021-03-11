@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react'
+import React, {useEffect, useState} from 'react'
 import {connect} from "react-redux";
 import {addFriend, getUsers, getUsersChange, removeFriend} from "../../redux/friends-reducer";
 import FriendsPresentation from "./FriendsPresentation/FriendsPresentation";
@@ -18,12 +18,17 @@ import {getIsAuthSelector} from "../../redux/selectors/auth-selectors";
 import {withRouter} from "react-router-dom";
 
 const FriendsContainer = (props) => {
+    let [pagesCount, setPaginatorCount] = useState(1);
+    const pagesCountIsBig = props.match.params.currentPage < pagesCount ? props.match.params.currentPage : pagesCount;
     useEffect(() => {
-        props.getUsers(props.pageSize, props.match.params.currentPage);
-    }, [props.getUsers]);
+        props.getUsers(props.pageSize, pagesCountIsBig);
+    }, [pagesCountIsBig]);
 
     const onPageChanged = (pageNumber) => {
         props.getUsersChange(props.pageSize, pageNumber);
+    };
+    const handlePagesCountMath = (count) => {
+        setPaginatorCount(count);
     };
 
     return (
@@ -31,7 +36,8 @@ const FriendsContainer = (props) => {
             <div className={s.users}>
                 {props.isFetching ?
                     <Preloader height='690px'/> :
-                    <FriendsPresentation {...props} onPageChanged={onPageChanged}/>}
+                    <FriendsPresentation {...props} onPageChanged={onPageChanged}
+                                         handlePagesCountMath={handlePagesCountMath}/>}
             </div>
             <div className={s.search_container}>
                 <div className={s.search}><SearchBar/></div>

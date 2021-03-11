@@ -17,7 +17,6 @@ class SideBarContainerComponent extends React.Component {
     }
 }
 
-
 function mapStateToProps(state) {
     return ({
         views: state.sideBar.views
