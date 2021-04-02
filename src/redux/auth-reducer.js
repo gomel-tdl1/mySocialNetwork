@@ -1,9 +1,10 @@
 import {authAPI, profileAPI} from "../API/API";
 import {stopSubmit} from "redux-form";
+import {asyncErrorMessageView} from "./app-reducer";
 
 const SET_USER_DATA = 'auth-reducer/SET_USER_DATA';
 const TOGGLE_IS_AUTH = 'auth-reducer/TOGGLE_IS_AUTH';
-const GET_AVATAR_FOR_HEADER = 'auth-reducer/GET_AVATAR_FOR_HEADER';
+const SET_AVATAR_FOR_HEADER = 'auth-reducer/SET_AVATAR_FOR_HEADER';
 const SET_CAPTCHA = 'auth-reducer/SET_CAPTCHA';
 const TOGGLE_IS_CAPTCHA_NEED = 'auth-reducer/TOGGLE_IS_CAPTCHA_NEED';
 
@@ -20,8 +21,8 @@ export const toggleIsAuth = (isAuth) => ({
     type: TOGGLE_IS_AUTH,
     isAuth
 });
-export const getAvatar = (avatar) => ({
-    type: GET_AVATAR_FOR_HEADER,
+export const setAvatarForHeader = (avatar) => ({
+    type: SET_AVATAR_FOR_HEADER,
     avatar
 });
 export const setCaptcha = (captcha) => ({
@@ -56,7 +57,7 @@ const authReducer = (state = initialState, action) => {
                 ...state,
                 isAuth: action.isAuth
             };
-        case GET_AVATAR_FOR_HEADER:
+        case SET_AVATAR_FOR_HEADER:
             return {
                 ...state,
                 avatar: action.avatar
@@ -80,44 +81,56 @@ const authReducer = (state = initialState, action) => {
 //checkAuthenticationThunkCreator
 export const checkAuthentication = () => {
     return async (dispatch) => {
-        let data = await authAPI.isAuth();
-        let userData = data.data;
-        if (data.resultCode === 0) {
-            dispatch(toggleIsAuth(true));
-            dispatch(setAuthUserData(userData.id, userData.email, userData.login, true));
-            let profileData = await profileAPI.getProfile(userData.id);
-            dispatch(getAvatar(profileData.photos.small));
-        } else {
-            dispatch(toggleIsAuth(false));
+        try{
+            let data = await authAPI.isAuth();
+            let userData = data.data;
+            if (data.resultCode === 0) {
+                dispatch(toggleIsAuth(true));
+                dispatch(setAuthUserData(userData.id, userData.email, userData.login, true));
+                let profileData = await profileAPI.getProfile(userData.id);
+                dispatch(setAvatarForHeader(profileData.photos.small));
+            } else {
+                dispatch(toggleIsAuth(false));
+            }
+        }catch (e) {
+            dispatch(asyncErrorMessageView(e));
         }
     }
 };
 //loginOnSiteThunkCreator
 export const loginOnSite = (email, password, rememberMe, captcha) => {
     return async (dispatch) => {
-        let response = await authAPI.loginOnSite(email, password, rememberMe, captcha);
-        const actionStopSubmit = stopSubmit('login', {_error: response.data.messages[0]});
-        if (response.data.resultCode === 0) {
-            dispatch(checkAuthentication());
-            dispatch(toggleIsCaptchaNeed(false));
-            dispatch(setCaptcha(null));
-        } else if (response.data.resultCode === 10) {
-            dispatch(toggleIsCaptchaNeed(true));
-            let data = await authAPI.getCaptcha();
-            dispatch(setCaptcha(data.url));
-            dispatch(actionStopSubmit);
-        } else if (response.data.resultCode === 1) {
-            dispatch(actionStopSubmit);
+        try {
+            let response = await authAPI.loginOnSite(email, password, rememberMe, captcha);
+            const actionStopSubmit = stopSubmit('login', {_error: response.data.messages[0]});
+            if (response.data.resultCode === 0) {
+                dispatch(checkAuthentication());
+                dispatch(toggleIsCaptchaNeed(false));
+                dispatch(setCaptcha(null));
+            } else if (response.data.resultCode === 10) {
+                dispatch(toggleIsCaptchaNeed(true));
+                let data = await authAPI.getCaptcha();
+                dispatch(setCaptcha(data.url));
+                dispatch(actionStopSubmit);
+            } else if (response.data.resultCode === 1) {
+                dispatch(actionStopSubmit);
+            }
+        } catch (e) {
+            dispatch(asyncErrorMessageView(e));
         }
     };
 };
 //logoutThunkCreator
 export const logout = () => {
     return async (dispatch) => {
-        let response = await authAPI.logout();
-        if (response.data.resultCode === 0) {
-            dispatch(checkAuthentication());
-            dispatch(setAuthUserData(null, null, null, false));
+        try {
+            let response = await authAPI.logout();
+            if (response.data.resultCode === 0) {
+                dispatch(checkAuthentication());
+                dispatch(setAuthUserData(null, null, null, false));
+            }
+        } catch (e) {
+            dispatch(asyncErrorMessageView(e));
         }
     };
 };

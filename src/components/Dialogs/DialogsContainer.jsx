@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 import {connect} from "react-redux";
 import Dialogs from "./Dialogs";
-import withAuthRedirect from "../../hoc/WithAuthRedirect";
+import withAuthRedirect from "../../hoc/withAuthRedirect";
 import {compose} from "redux";
 import {getDialogsDataSelector} from "../../redux/selectors/dialogs-selectors";
 import {getDialogs} from "../../redux/dialogs-reducer";

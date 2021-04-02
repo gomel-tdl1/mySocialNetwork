@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 import Profile from "./Profile";
 import {connect} from "react-redux";
-import {getUserProfile, getUserStatus} from "../../redux/profile-reducer";
+import {getUserProfile, getUserStatus, updateProfileDescription, updateProfilePhoto} from "../../redux/profile-reducer";
 import {withRouter} from "react-router-dom";
 import {compose} from "redux";
 import {getIsFetchingSelector, getProfileSelector} from "../../redux/selectors/profile-selectors";
@@ -20,7 +20,7 @@ const ProfileContainerComponent = (props) => {
 
     if (!props.authUserId && !props.match.params.userId) return <ProfileGuest/>;
     return (
-        <Profile {...props}/>
+        <Profile {...props} isOwner={!props.match.params.userId}/>
     );
 };
 
@@ -34,7 +34,9 @@ export default compose(
     connect(mapStateToProps, {
         getUserProfile,
         getUserStatus,
-        startChatting
+        startChatting,
+        updateProfilePhoto,
+        updateProfileDescription
     }),
     withRouter
 )(ProfileContainerComponent);

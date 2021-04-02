@@ -40,6 +40,33 @@ export const profileAPI = {
     },
     updateStatus(status) {
         return instance.put('profile/status', {status: status});
+    },
+    updateProfilePhoto(file) {
+        let formData = new FormData();
+        formData.append('image', file);
+        return instance.put('profile/photo', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        }).then(response => response.data);
+    },
+    updateProfileDescription(data) {
+        return instance.put('profile', {
+            "aboutMe": data.aboutMe || null,
+            "contacts": {
+                facebook: data.facebook || null,
+                github: data.github || null,
+                instagram: data.instagram || null,
+                mainLink: data.mainLink || null,
+                twitter: data.twitter || null,
+                vk: data.vk || null,
+                website: data.website || null,
+                youtube: data.youtube || null
+            },
+            "lookingForAJob": data.lookingForAJob || false,
+            "lookingForAJobDescription": data.lookingForAJobDescription || null,
+            "fullName": data.fullName
+        }).then(response => response.data);
     }
 };
 export const dialogsAPI = {

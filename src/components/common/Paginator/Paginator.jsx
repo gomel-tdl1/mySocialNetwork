@@ -5,10 +5,11 @@ import {NavLink} from "react-router-dom";
 const Paginator = React.memo((props) => {
     //pagesCount should be %2=1
     const middlePage = Math.ceil(props.paginatorCount / 2);
-    const pagesCount = Math.ceil(props.totalCount / props.pageSize);
+    let pagesCount = Math.ceil(props.totalCount / props.pageSize);
+    if (!pagesCount) pagesCount = 1;
     useEffect(() => {
         props.handlePagesCountMath(pagesCount);
-    },[pagesCount]);
+    }, [pagesCount]);
     let currentPage = props.currentPage ? props.currentPage : 1;
     if (currentPage > pagesCount) {
         currentPage = pagesCount;
@@ -23,7 +24,7 @@ const Paginator = React.memo((props) => {
             pagesView.push(i);
         }
     } else if (currentPage > (pagesCount - middlePage + 1) && currentPage <= pagesCount) {
-        for (let i = pagesCount - props.paginatorCount; i <= pagesCount; i++) {
+        for (let i = pagesCount - props.paginatorCount + 1; i <= pagesCount; i++) {
             pagesView.push(i);
         }
     }

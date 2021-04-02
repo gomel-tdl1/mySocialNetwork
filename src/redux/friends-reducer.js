@@ -1,4 +1,5 @@
 import {usersAPI} from "../API/API";
+import {asyncErrorMessageView} from "./app-reducer";
 
 const ADD_FRIEND = 'friends-reducer/ADD_FRIEND';
 const REMOVE_FRIEND = 'friends-reducer/REMOVE_FRIEND';
@@ -119,10 +120,18 @@ export const getUsersChange = (pageSize, pageNumber) => {
 };
 
 async function addRemoveFlow(dispatch, userId, apiMethod, actionCreator) {
-    dispatch(toggleButtonInProgress(true, userId));
-    let data = await apiMethod(userId);
-    if (data.resultCode === 0) dispatch(actionCreator(userId));
-    dispatch(toggleButtonInProgress(false, userId));
+    try {
+        dispatch(toggleButtonInProgress(true, userId));
+        let data = await apiMethod(userId);
+        if (data.resultCode === 0) {
+            dispatch(actionCreator(userId));
+        } else {
+            throw new Error(data.messages[0])
+        }
+        dispatch(toggleButtonInProgress(false, userId));
+    } catch (e) {
+        dispatch(asyncErrorMessageView(e));
+    }
 }
 
 // removeFriendThunkCreator

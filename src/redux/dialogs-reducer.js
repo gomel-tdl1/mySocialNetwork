@@ -1,4 +1,5 @@
 import {dialogsAPI} from "../API/API";
+import {asyncErrorMessageView} from "./app-reducer";
 
 const UPDATE_DIALOGS_DATA = 'dialogs-reducer/UPDATE_DIALOGS_DATA';
 const UPDATE_MESSAGES_DATA = 'dialogs-reducer/UPDATE_MESSAGES_DATA';
@@ -41,9 +42,15 @@ function trueResultCode(data) {
 
 //startChattingThunkCreator
 export const startChatting = (userId) => async (dispatch) => {
-    let data = await dialogsAPI.startChatting(userId);
-    if (trueResultCode(data)) {
-        dispatch(getDialogs());
+    try {
+        let data = await dialogsAPI.startChatting(userId);
+        if (trueResultCode(data)) {
+            dispatch(getDialogs());
+        } else {
+            throw new Error(data.messages[0]);
+        }
+    } catch (e) {
+        dispatch(asyncErrorMessageView(e));
     }
 };
 //getDialogsThunkCreator

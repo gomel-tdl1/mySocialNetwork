@@ -1,9 +1,12 @@
 import {profileAPI} from "../API/API";
+import {setAvatarForHeader} from "./auth-reducer";
+import {asyncErrorMessageView} from "./app-reducer";
 
 const ADD_POST = 'profile-reducer/ADD-POST';
 const SET_USER_PROFILE = 'profile-reducer/SET_USER_PROFILE';
 const TOGGLE_IS_FETCHING = 'profile-reducer/TOGGLE_IS_FETCHING';
 const SET_USER_STATUS = 'profile-reducer/SET_USER_STATUS';
+const UPDATE_PHOTO_SUCCESS = 'profile-reducer/UPDATE_PHOTO_SUCCESS';
 
 export const addPost = (id, text) => ({
     type: ADD_POST,
@@ -21,6 +24,10 @@ export const setUserStatus = (status) => ({
 export const toggleIsFetching = (isFetching) => ({
     type: TOGGLE_IS_FETCHING,
     isFetching
+});
+export const updateProfilePhotoSuccess = (photos) => ({
+    type: UPDATE_PHOTO_SUCCESS,
+    photos
 });
 
 let initialState = {
@@ -50,6 +57,8 @@ const profileReducer = (state = initialState, action) => {
             return {...state, isFetching: action.isFetching};
         case SET_USER_STATUS:
             return {...state, status: action.status};
+        case UPDATE_PHOTO_SUCCESS:
+            return {...state, profile: {...state.profile, photos: action.photos}};
 
         default:
             break;
@@ -78,9 +87,46 @@ export const getUserStatus = (id) => {
 // updateUserStatusThunkCreator
 export const updateUserStatus = (status) => {
     return async (dispatch) => {
-        let response = await profileAPI.updateStatus(status);
-        if (response.data.resultCode === 0) {
-            dispatch(setUserStatus(status))
+        try {
+            let response = await profileAPI.updateStatus(status);
+            if (response.data.resultCode === 0) {
+                dispatch(setUserStatus(status))
+            } else {
+                throw new Error(response.data.messages[0]);
+            }
+        } catch (e) {
+            dispatch(asyncErrorMessageView(e));
+        }
+    };
+};
+//updateProfilePhotoThunkCreator
+export const updateProfilePhoto = (file) => {
+    return async (dispatch) => {
+        try {
+            let response = await profileAPI.updateProfilePhoto(file);
+            if (response.resultCode === 0) {
+                dispatch(updateProfilePhotoSuccess(response.data.photos));
+                dispatch(setAvatarForHeader(response.data.photos.small))
+            } else {
+                throw new Error(response.messages[0]);
+            }
+        } catch (e) {
+            dispatch(asyncErrorMessageView(e));
+        }
+    };
+};
+//updateProfileDescriptionThunkCreator
+export const updateProfileDescription = (data, id) => {
+    return async (dispatch) => {
+        try {
+            let response = await profileAPI.updateProfileDescription(data);
+            if (response.resultCode === 0) {
+                dispatch(getUserProfile(id));
+            } else {
+                throw new Error(response.messages[0]);
+            }
+        } catch (e) {
+            dispatch(asyncErrorMessageView(e));
         }
     };
 };

@@ -45,3 +45,9 @@
     flex-direction: column;
     align-items: center;
 }
+.newAvatar{
+    margin-top: 15px;
+}
+.edit_button{
+    margin-top: 10px;
+}

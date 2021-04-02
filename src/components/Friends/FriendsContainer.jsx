@@ -19,10 +19,12 @@ import {withRouter} from "react-router-dom";
 
 const FriendsContainer = (props) => {
     let [pagesCount, setPaginatorCount] = useState(1);
-    const pagesCountIsBig = props.match.params.currentPage < pagesCount ? props.match.params.currentPage : pagesCount;
+    const pagesCountIsBig = !props.match.params.currentPage ? 1 :
+        props.match.params.currentPage < pagesCount ?
+            props.match.params.currentPage : pagesCount;
     useEffect(() => {
         props.getUsers(props.pageSize, pagesCountIsBig);
-    }, [pagesCountIsBig]);
+    }, [pagesCount]);
 
     const onPageChanged = (pageNumber) => {
         props.getUsersChange(props.pageSize, pageNumber);

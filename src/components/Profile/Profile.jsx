@@ -9,7 +9,9 @@ function Profile(props) {
     return (
         <main className={s.content}>
             <ProfileInfo profile={props.profile} userId={props.match.params.userId} authUserId={props.authUserId}
-                         startChatting={props.startChatting}/>
+                         startChatting={props.startChatting} isOwner={props.isOwner}
+                         updateProfilePhoto={props.updateProfilePhoto}
+                         updateProfileDescription={props.updateProfileDescription}/>
             <MyPostsContainer/>
         </main>
     );
