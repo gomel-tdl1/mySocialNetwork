@@ -3,20 +3,27 @@ import {checkAuthentication} from "./auth-reducer";
 const INITIALIZED_SUCCESS = 'app-reducer/INITIALIZED_SUCCESS';
 const SET_ERROR_MESSAGE = 'app-reducer/SET_ERROR_MESSAGE';
 
-export const initializedSuccess = () => ({
+type InitializedSuccessActionType = { type: typeof INITIALIZED_SUCCESS }
+export const initializedSuccess = (): InitializedSuccessActionType => ({
     type: INITIALIZED_SUCCESS
 });
-export const setErrorMessage = (errorMessage) => ({
+
+type SetErrorMessageActionType = { type: typeof SET_ERROR_MESSAGE, errorMessage: string | null }
+export const setErrorMessage = (errorMessage: string | null): SetErrorMessageActionType => ({
     type: SET_ERROR_MESSAGE,
     errorMessage
 });
 
-const initialState = {
+export type InitialStateType = {
+    initialized: boolean,
+    errorMessage: string | null
+}
+const initialState: InitialStateType = {
     initialized: false,
     errorMessage: null
 };
 
-const appReducer = (state = initialState, action) => {
+const appReducer = (state = initialState, action: any): InitialStateType => {
     switch (action.type) {
         case INITIALIZED_SUCCESS:
             return {
@@ -33,13 +40,14 @@ const appReducer = (state = initialState, action) => {
             return {...state};
     }
 };
-
-export const initializeApp = () => async (dispatch) => {
+type InitializeAppThunkType = () => (dispatch: Function) => void;
+export const initializeApp: InitializeAppThunkType = () => async (dispatch) => {
     await dispatch(checkAuthentication());
     dispatch(initializedSuccess());
 };
 
-export const asyncErrorMessageView = (error) => (dispatch) => {
+type AsyncErrorMessageViewThunkType = (error: any) => (dispatch: Function) => void;
+export const asyncErrorMessageView: AsyncErrorMessageViewThunkType = (error) => (dispatch) => {
     dispatch(setErrorMessage(error.message));
     setTimeout(() => {
         dispatch(setErrorMessage(null));

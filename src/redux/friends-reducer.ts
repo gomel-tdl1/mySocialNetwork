@@ -9,46 +9,87 @@ const SET_TOTAL_USERS_COUNT = 'friends-reducer/SET_TOTAL_USERS_COUNT';
 const TOGGLE_IS_FETCHING = 'friends-reducer/TOGGLE_IS_FETCHING';
 const TOGGLE_BUTTON_IN_PROGRESS = 'friends-reducer/TOGGLE_BUTTON_IN_PROGRESS';
 
-export const addFriendSuccess = (id) => ({
+type AddFriendSuccessActionType = {
+    type: typeof ADD_FRIEND,
+    userId: number
+}
+export const addFriendSuccess = (userId: number): AddFriendSuccessActionType => ({
     type: ADD_FRIEND,
-    userId: id
+    userId
 });
-export const removeFriendSuccess = (id) => ({
+
+type RemoveFriendSuccessActionType = {
+    type: typeof REMOVE_FRIEND,
+    userId: number
+}
+export const removeFriendSuccess = (userId: number): RemoveFriendSuccessActionType => ({
     type: REMOVE_FRIEND,
-    userId: id
+    userId
 });
-export const setUsers = (users) => ({
+
+type SetUsersActionType = {
+    type: typeof SET_USERS,
+    users: Array<UserType>
+}
+export const setUsers = (users: Array<UserType>): SetUsersActionType => ({
     type: SET_USERS,
     users
 });
-export const setTotalUsersCount = (totalCount) => ({
+
+type SetTotalUsersCountActionType = {
+    type: typeof SET_TOTAL_USERS_COUNT,
+    totalCount: number
+}
+export const setTotalUsersCount = (totalCount: number): SetTotalUsersCountActionType => ({
     type: SET_TOTAL_USERS_COUNT,
     totalCount
 });
-export const setCurrentPage = (page) => ({
-    type: SET_CURRENT_PAGE,
-    currentPage: page
-});
-export const toggleIsFetching = (isFetching) => ({
+// export const setCurrentPage = (page) => ({
+//     type: SET_CURRENT_PAGE,
+//     currentPage: page
+// });
+type ToggleIsFetchingActionType = {
+    type: typeof TOGGLE_IS_FETCHING,
+    isFetching: boolean
+}
+export const toggleIsFetching = (isFetching: boolean): ToggleIsFetchingActionType => ({
     type: TOGGLE_IS_FETCHING,
     isFetching
 });
-export const toggleButtonInProgress = (isFetching, userId) => ({
+
+type ToggleButtonInProgressActionType = {
+    type: typeof TOGGLE_BUTTON_IN_PROGRESS,
+    isFetching: boolean,
+    userId: number
+}
+export const toggleButtonInProgress = (isFetching: boolean, userId: number): ToggleButtonInProgressActionType => ({
     type: TOGGLE_BUTTON_IN_PROGRESS,
     isFetching,
     userId
 });
 
+type UserType = {
+    name: string,
+    id: number,
+    uniqueUrlName: string | null,
+    photos: {
+        small: string | null,
+        large: string | null
+    },
+    status: string | null,
+    followed: boolean
+}
 const initialState = {
-    users: [],
+    users: [] as Array<UserType>,
     pageSize: 5,
     usersTotalCount: 0,
     // currentPage: 1,
     isFetching: false,
-    buttonInProgress: []
+    buttonInProgress: [] as Array<number>
 };
+export type InitialStateType = typeof initialState;
 
-const friendsReducer = (state = initialState, action) => {
+const friendsReducer = (state = initialState, action: any): InitialStateType => {
     switch (action.type) {
         case ADD_FRIEND:
             return {
@@ -98,28 +139,36 @@ const friendsReducer = (state = initialState, action) => {
     }
 };
 
+type GetUsersResultType = {
+    items: Array<UserType>,
+    totalCount: number,
+    error: any
+}
 //getUsersThunkCreator
-export const getUsers = (pageSize, currentPage) => {
+type GetUsersThunkType = (pageSize: number, currentPage: number) => (dispatch: Function) => void
+export const getUsers: GetUsersThunkType = (pageSize, currentPage) => {
     return async (dispatch) => {
         dispatch(toggleIsFetching(true));
-        let data = await usersAPI.getUsers(pageSize, currentPage);
+        let data: GetUsersResultType = await usersAPI.getUsers(pageSize, currentPage);
         dispatch(toggleIsFetching(false));
         dispatch(setUsers(data.items));
         dispatch(setTotalUsersCount(data.totalCount));
     }
 };
 //getUsersChangeThunkCreator
-export const getUsersChange = (pageSize, pageNumber) => {
+type GetUsersChangeThunkType = (pageSize: number, pageNumber: number) => (dispatch: Function) => void
+export const getUsersChange: GetUsersChangeThunkType = (pageSize, pageNumber) => {
     return async (dispatch) => {
         // dispatch(setCurrentPage(pageNumber));
         dispatch(toggleIsFetching(true));
-        let data = await usersAPI.getUsers(pageSize, pageNumber);
+        let data: GetUsersResultType = await usersAPI.getUsers(pageSize, pageNumber);
         dispatch(toggleIsFetching(false));
-        dispatch(setUsers(data.items, data.totalCount));
+        dispatch(setUsers(data.items));
     }
 };
 
-async function addRemoveFlow(dispatch, userId, apiMethod, actionCreator) {
+type AddRemoveFlowType = (dispatch: Function, userId: number, apiMethod: any, actionCreator: Function) => void
+const addRemoveFlow: AddRemoveFlowType = async (dispatch, userId, apiMethod, actionCreator) => {
     try {
         dispatch(toggleButtonInProgress(true, userId));
         let data = await apiMethod(userId);
@@ -135,14 +184,16 @@ async function addRemoveFlow(dispatch, userId, apiMethod, actionCreator) {
 }
 
 // removeFriendThunkCreator
-export const removeFriend = (id) => {
+type RemoveFriendThunkType = (id: number) => (dispatch: Function) => void
+export const removeFriend: RemoveFriendThunkType = (id) => {
     return async (dispatch) => {
         let apiMethod = usersAPI.deleteFriend.bind(usersAPI);
         addRemoveFlow(dispatch, id, apiMethod, removeFriendSuccess);
     }
 };
 // addFriendThunkCreator
-export const addFriend = (id) => {
+type AddFriendThunkType = (id: number) => (dispatch: Function) => void
+export const addFriend: AddFriendThunkType = (id) => {
     return async (dispatch) => {
         let apiMethod = usersAPI.follow.bind(usersAPI);
         addRemoveFlow(dispatch, id, apiMethod, addFriendSuccess);

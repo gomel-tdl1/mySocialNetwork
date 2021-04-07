@@ -1,5 +1,5 @@
+import { stopSubmit } from "redux-form";
 import {authAPI, profileAPI} from "../API/API";
-import {stopSubmit} from "redux-form";
 import {asyncErrorMessageView} from "./app-reducer";
 
 const SET_USER_DATA = 'auth-reducer/SET_USER_DATA';
@@ -8,7 +8,18 @@ const SET_AVATAR_FOR_HEADER = 'auth-reducer/SET_AVATAR_FOR_HEADER';
 const SET_CAPTCHA = 'auth-reducer/SET_CAPTCHA';
 const TOGGLE_IS_CAPTCHA_NEED = 'auth-reducer/TOGGLE_IS_CAPTCHA_NEED';
 
-export const setAuthUserData = (id, email, login, isAuth) => ({
+
+type SetAuthUserDataActionPayloadType = {
+    id: number | null,
+    email: string | null,
+    login: string | null,
+    isAuth: boolean
+}
+type SetAuthUserDataActionType = {
+    type: typeof SET_USER_DATA,
+    payload: SetAuthUserDataActionPayloadType
+}
+export const setAuthUserData = (id: number | null, email: string | null, login: string | null, isAuth: boolean): SetAuthUserDataActionType => ({
     type: SET_USER_DATA,
     payload: {
         id,
@@ -17,35 +28,66 @@ export const setAuthUserData = (id, email, login, isAuth) => ({
         isAuth
     }
 });
-export const toggleIsAuth = (isAuth) => ({
+
+type ToggleIsAuthActionType = {
+    type: typeof TOGGLE_IS_AUTH,
+    isAuth: boolean
+}
+export const toggleIsAuth = (isAuth: boolean): ToggleIsAuthActionType => ({
     type: TOGGLE_IS_AUTH,
     isAuth
 });
-export const setAvatarForHeader = (avatar) => ({
+
+type SetAvatarForHeaderActionType = {
+    type: typeof SET_AVATAR_FOR_HEADER,
+    avatar: string
+}
+export const setAvatarForHeader = (avatar: string): SetAvatarForHeaderActionType => ({
     type: SET_AVATAR_FOR_HEADER,
     avatar
 });
-export const setCaptcha = (captcha) => ({
+
+type SetCaptchaActionType = {
+    type: typeof SET_CAPTCHA,
+    captcha: string | null
+}
+export const setCaptcha = (captcha: string | null): SetCaptchaActionType => ({
     type: SET_CAPTCHA,
     captcha
 });
-export const toggleIsCaptchaNeed = (isNeed) => ({
+
+type ToggleIsCaptchaNeedActionType = {
+    type: typeof TOGGLE_IS_CAPTCHA_NEED,
+    isNeed: boolean
+}
+export const toggleIsCaptchaNeed = (isNeed: boolean): ToggleIsCaptchaNeedActionType => ({
     type: TOGGLE_IS_CAPTCHA_NEED,
     isNeed
 });
 
+export type InitialStateType2 = {
+    id: null | number,
+    login: string | null,
+    email: string | null,
+    avatar: string | null,
+    isAuth: boolean,
+    isFetching: boolean,
+    isCaptchaNeed: boolean,
+    captcha: string | null
+}
 const initialState = {
-    id: null,
-    login: null,
-    email: null,
-    avatar: null,
+    id: null as number | null,
+    login: null as string | null,
+    email: null as string | null,
+    avatar: null as string | null,
     isAuth: false,
     isFetching: false,
     isCaptchaNeed: false,
-    captcha: null
+    captcha: null as string | null
 };
+export type InitialStateType = typeof initialState;
 
-const authReducer = (state = initialState, action) => {
+const authReducer = (state = initialState, action: any): InitialStateType => {
     switch (action.type) {
         case SET_USER_DATA:
             return {
@@ -79,9 +121,10 @@ const authReducer = (state = initialState, action) => {
 };
 
 //checkAuthenticationThunkCreator
-export const checkAuthentication = () => {
+type CheckAuthenticationThunkType = () => (dispatch: Function) => void;
+export const checkAuthentication: CheckAuthenticationThunkType = () => {
     return async (dispatch) => {
-        try{
+        try {
             let data = await authAPI.isAuth();
             let userData = data.data;
             if (data.resultCode === 0) {
@@ -92,13 +135,14 @@ export const checkAuthentication = () => {
             } else {
                 dispatch(toggleIsAuth(false));
             }
-        }catch (e) {
+        } catch (e) {
             dispatch(asyncErrorMessageView(e));
         }
     }
 };
 //loginOnSiteThunkCreator
-export const loginOnSite = (email, password, rememberMe, captcha) => {
+type LoginOnSiteThunkType = (email: string, password: string, rememberMe: boolean, captcha: string) => (dispatch: Function) => void;
+export const loginOnSite: LoginOnSiteThunkType = (email, password, rememberMe, captcha) => {
     return async (dispatch) => {
         try {
             let response = await authAPI.loginOnSite(email, password, rememberMe, captcha);
@@ -121,7 +165,8 @@ export const loginOnSite = (email, password, rememberMe, captcha) => {
     };
 };
 //logoutThunkCreator
-export const logout = () => {
+type LogoutType = () => (dispatch: Function) => void;
+export const logout: LogoutType = () => {
     return async (dispatch) => {
         try {
             let response = await authAPI.logout();
