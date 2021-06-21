@@ -1,9 +1,13 @@
 import s from "./SideBar.module.css";
 import React from "react-dom";
 import unknown from '../../../assets/images/unknownAvatar.png'
+import {FC} from "react";
 
-
-export default function SideItem(props) {
+type PropsType = {
+    name: string
+    avatar: string | null
+}
+const SideItem: FC<PropsType> = (props) => {
     return (
         <div className={s.sidebar}>
             <div className={s.avatar}>
@@ -13,3 +17,4 @@ export default function SideItem(props) {
         </div>
     );
 }
+export default SideItem

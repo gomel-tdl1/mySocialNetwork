@@ -38,7 +38,7 @@ export const toggleIsAuth = (isAuth: boolean): ToggleIsAuthActionType => ({
     isAuth
 });
 
-type SetAvatarForHeaderActionType = {
+export type SetAvatarForHeaderActionType = {
     type: typeof SET_AVATAR_FOR_HEADER,
     avatar: string
 }

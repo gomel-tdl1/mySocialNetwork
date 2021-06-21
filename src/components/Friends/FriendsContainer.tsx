@@ -3,7 +3,6 @@ import {connect} from "react-redux";
 import {addFriend, getUsers, getUsersChange, removeFriend} from "../../redux/friends-reducer";
 import FriendsPresentation from "./FriendsPresentation/FriendsPresentation";
 import s from "./FriendsContainer.module.css";
-import SearchBar from "./SearchBar/SearchBar";
 import Preloader from "../common/Preloader/Preloader";
 import {compose} from "redux";
 import {
@@ -16,8 +15,31 @@ import {
 } from "../../redux/selectors/users-selectors";
 import {getIsAuthSelector} from "../../redux/selectors/auth-selectors";
 import {withRouter} from "react-router-dom";
+import {UserType} from "../../types/types";
+import {AppStateType} from "../../redux/redux-store";
+import SearchBar from "./SearchBar/SearchBar";
 
-const FriendsContainer = (props) => {
+type MapStatePropsType = {
+    users: Array<UserType>,
+    totalCount: number,
+    pageSize: number,
+    currentPage: number,
+    isFetching: boolean,
+    buttonInProgress: Array<number>,
+    isAuth: boolean
+}
+type MapDispatchPropsType = {
+    getUsers: (pageSize: number, currentPage: number) => void
+    getUsersChange: (pageSize: number, pageNumber: number) => void,
+    removeFriend: (userId: number) => void
+    addFriend: (userId: number) => void
+}
+type OwnPropsType = {
+    match: any
+}
+type PropsType = MapStatePropsType & MapDispatchPropsType & OwnPropsType
+
+const FriendsContainer: React.FC<PropsType> = (props) => {
     let [pagesCount, setPaginatorCount] = useState(1);
     const pagesCountIsBig = !props.match.params.currentPage ? 1 :
         props.match.params.currentPage < pagesCount ?
@@ -26,10 +48,10 @@ const FriendsContainer = (props) => {
         props.getUsers(props.pageSize, pagesCountIsBig);
     }, [pagesCount]);
 
-    const onPageChanged = (pageNumber) => {
+    const onPageChanged = (pageNumber: number): void => {
         props.getUsersChange(props.pageSize, pageNumber);
     };
-    const handlePagesCountMath = (count) => {
+    const handlePagesCountMath = (count: number): void => {
         setPaginatorCount(count);
     };
 
@@ -48,7 +70,7 @@ const FriendsContainer = (props) => {
     );
 };
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = (state: AppStateType): MapStatePropsType => ({
     users: getUsersSelector(state),
     totalCount: getTotalCountSelector(state),
     pageSize: getPageSizeSelector(state),
@@ -59,7 +81,7 @@ const mapStateToProps = (state) => ({
 });
 
 export default compose(
-    connect(mapStateToProps, {
+    connect<MapStatePropsType, MapDispatchPropsType, OwnPropsType, AppStateType>(mapStateToProps, {
         getUsers,
         getUsersChange,
         removeFriend,

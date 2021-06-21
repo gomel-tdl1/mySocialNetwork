@@ -2,7 +2,16 @@ import React, {useEffect} from 'react'
 import s from '../../Friends/FriendsPresentation/FriendsPresentation.module.css'
 import {NavLink} from "react-router-dom";
 
-const Paginator = React.memo((props) => {
+type PropsType = {
+    paginatorCount: number
+    totalCount: number
+    pageSize: number
+    handlePagesCountMath: (count: number) => void
+    currentPage: number
+    onPageChanged: (pageNumber: number) => void
+}
+
+const Paginator: React.FC<PropsType> = React.memo((props) => {
     //pagesCount should be %2=1
     const middlePage = Math.ceil(props.paginatorCount / 2);
     let pagesCount = Math.ceil(props.totalCount / props.pageSize);
@@ -37,7 +46,7 @@ const Paginator = React.memo((props) => {
                     <NavLink to={`/friends/${p}`} onClick={(e) => {
                         props.onPageChanged(p)
                     }} key={p}>
-                        <span className={isSelected && s.selected}>{p}</span>
+                        <span className={isSelected ? s.selected : ''}>{p}</span>
                     </NavLink>
                 );
             })}

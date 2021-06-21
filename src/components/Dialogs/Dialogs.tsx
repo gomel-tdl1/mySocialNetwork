@@ -1,10 +1,15 @@
-import React from 'react';
+import React, {FC} from 'react';
 import s from './Dialogs.module.css';
-import MessagesContainer from "./Messages/MessagesContainer";
 import DialogItem from "./Dialog/DialogItem";
 import unknown from '../../assets/images/unknownAvatar.png';
+import {DialogType} from "../../types/types";
+import MessagesContainer from "./Messages/MessagesContainer";
 
-const Dialogs = (props) => {
+type PropsType = {
+    dialogsData: Array<DialogType>
+    match: any
+}
+const Dialogs: FC<PropsType> = (props) => {
     const dialogsDataMap = props.dialogsData.map(p => {
         return <DialogItem
             key={p.id}
@@ -18,6 +23,7 @@ const Dialogs = (props) => {
             <div className={s.dialogs}>
                 {dialogsDataMap}
             </div>
+            {/*@ts-ignore*/}
             {!!props.match.params.friendId && <MessagesContainer/>}
         </div>
     );

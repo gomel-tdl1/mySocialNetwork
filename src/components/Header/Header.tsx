@@ -1,10 +1,11 @@
-import React from 'react';
+import React, {FC} from 'react';
 import s from './Header.module.css'
 import {NavLink} from "react-router-dom";
 import unknown from '../../assets/images/unknownAvatar.png'
 import logout from '../../assets/images/Header/log-out.png'
+import {HeaderPropsType} from "./HeaderContainer";
 
-const Header = React.memo((props) => {
+const Header: FC<HeaderPropsType> = React.memo((props) => {
     return (
         <header className={s.header}>
             <img

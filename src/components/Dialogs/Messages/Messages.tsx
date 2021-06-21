@@ -1,16 +1,20 @@
-import React from 'react';
+import React, {FC} from 'react';
 import s from './Messages.module.css';
-import {Field, reduxForm} from "redux-form";
+import {Field, InjectedFormProps, reduxForm} from "redux-form";
 import {createField, Textarea} from "../../common/FormsControl/FormsControl";
 import {maxLengthCreator, required} from "../../../utils/validators";
 import Message from "./Message/Message";
+import {MessagesPropsType} from "./MessagesContainer";
+type SendMessageDataType ={
+    message: string
+}
+const Messages: FC<MessagesPropsType> = (props) => {
 
-const Messages = (props) => {
-    function handleSendMessageClick(data) {
+    function handleSendMessageClick(data: SendMessageDataType): void {
         props.sendMessage(props.match.params.friendId, data.message)
     }
 
-    function whoSendMessage(senderId) {
+    function whoSendMessage(senderId: number): string {
         return senderId === props.authUserId ? 'me' : 'you';
     }
 
@@ -30,7 +34,7 @@ const Messages = (props) => {
 
 const maxLength300 = maxLengthCreator(300);
 
-const MessagesForm = (props) => {
+const MessagesForm: FC<InjectedFormProps<SendMessageDataType>> = (props) => {
     return (
         <form className={s.form} onSubmit={props.handleSubmit}>
             {createField(Textarea, 'message', [required, maxLength300], 'Enter message...')}
@@ -38,7 +42,7 @@ const MessagesForm = (props) => {
         </form>
     )
 };
-const MessagesReduxForm = reduxForm({
+const MessagesReduxForm = reduxForm<SendMessageDataType>({
     form: 'newMessage'
 })(MessagesForm);
 

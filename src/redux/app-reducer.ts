@@ -1,4 +1,7 @@
 import {checkAuthentication} from "./auth-reducer";
+import {Dispatch} from "redux";
+import {ThunkAction} from "redux-thunk";
+import {AppStateType} from "./redux-store";
 
 const INITIALIZED_SUCCESS = 'app-reducer/INITIALIZED_SUCCESS';
 const SET_ERROR_MESSAGE = 'app-reducer/SET_ERROR_MESSAGE';
@@ -14,16 +17,15 @@ export const setErrorMessage = (errorMessage: string | null): SetErrorMessageAct
     errorMessage
 });
 
-export type InitialStateType = {
-    initialized: boolean,
-    errorMessage: string | null
-}
-const initialState: InitialStateType = {
+const initialState = {
     initialized: false,
-    errorMessage: null
+    errorMessage: null as string | null
 };
+export type InitialStateType = typeof initialState;
 
-const appReducer = (state = initialState, action: any): InitialStateType => {
+type ActionsTypes = InitializedSuccessActionType | SetErrorMessageActionType
+
+const appReducer = (state = initialState, action: ActionsTypes): InitialStateType => {
     switch (action.type) {
         case INITIALIZED_SUCCESS:
             return {
@@ -40,14 +42,18 @@ const appReducer = (state = initialState, action: any): InitialStateType => {
             return {...state};
     }
 };
-type InitializeAppThunkType = () => (dispatch: Function) => void;
-export const initializeApp: InitializeAppThunkType = () => async (dispatch) => {
+
+type DispatchType = Dispatch<ActionsTypes>
+type ThunkActionType = ThunkAction<Promise<void>, AppStateType, unknown, ActionsTypes>;
+
+export const initializeApp = (): ThunkActionType => async (dispatch) => {
     await dispatch(checkAuthentication());
     dispatch(initializedSuccess());
 };
 
-type AsyncErrorMessageViewThunkType = (error: any) => (dispatch: Function) => void;
-export const asyncErrorMessageView: AsyncErrorMessageViewThunkType = (error) => (dispatch) => {
+
+export const asyncErrorMessageView = (error: any): ThunkActionType =>
+    async (dispatch) => {
     dispatch(setErrorMessage(error.message));
     setTimeout(() => {
         dispatch(setErrorMessage(null));

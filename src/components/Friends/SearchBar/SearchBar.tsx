@@ -1,10 +1,12 @@
 import React from 'react'
 import s from './SearchBar.module.css'
 
-export default function SearchBar(props) {
+type PropsType = {}
+const SearchBar: React.FC<PropsType> = (props) => {
     return (
         <div className={s.content}>
 
         </div>
     );
 }
+export default SearchBar

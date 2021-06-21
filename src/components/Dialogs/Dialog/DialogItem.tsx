@@ -1,8 +1,14 @@
-import React from 'react';
+import React, {FC} from 'react';
 import s from './DialogItem.module.css';
 import {NavLink} from "react-router-dom";
+import unknown from "../../../assets/images/unknownAvatar.png";
 
-export default function DialogItem(props) {
+type PropsType = {
+    name: string
+    avatar: string
+    id: number
+}
+const DialogItem: FC<PropsType> = (props) => {
     return (
         <NavLink to={`/dialogs/${props.id}`} activeClassName={s.active} className={s.item}>
             <div className={s.item__avatar}>
@@ -12,3 +18,4 @@ export default function DialogItem(props) {
         </NavLink>
     );
 }
+export default DialogItem

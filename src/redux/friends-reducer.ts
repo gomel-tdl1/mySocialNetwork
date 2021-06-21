@@ -1,10 +1,14 @@
 import {usersAPI} from "../API/API";
+import {UserType} from "../types/types";
 import {asyncErrorMessageView} from "./app-reducer";
+import {Dispatch} from "redux";
+import {AppStateType} from "./redux-store";
+import {ThunkAction} from "redux-thunk";
 
 const ADD_FRIEND = 'friends-reducer/ADD_FRIEND';
 const REMOVE_FRIEND = 'friends-reducer/REMOVE_FRIEND';
 const SET_USERS = 'friends-reducer/SET_USERS';
-const SET_CURRENT_PAGE = 'friends-reducer/SET_CURRENT_PAGE';
+// const SET_CURRENT_PAGE = 'friends-reducer/SET_CURRENT_PAGE';
 const SET_TOTAL_USERS_COUNT = 'friends-reducer/SET_TOTAL_USERS_COUNT';
 const TOGGLE_IS_FETCHING = 'friends-reducer/TOGGLE_IS_FETCHING';
 const TOGGLE_BUTTON_IN_PROGRESS = 'friends-reducer/TOGGLE_BUTTON_IN_PROGRESS';
@@ -68,28 +72,25 @@ export const toggleButtonInProgress = (isFetching: boolean, userId: number): Tog
     userId
 });
 
-type UserType = {
-    name: string,
-    id: number,
-    uniqueUrlName: string | null,
-    photos: {
-        small: string | null,
-        large: string | null
-    },
-    status: string | null,
-    followed: boolean
-}
+type ActionsTypes =
+    AddFriendSuccessActionType
+    | RemoveFriendSuccessActionType
+    | SetUsersActionType
+    | SetTotalUsersCountActionType
+    | ToggleIsFetchingActionType
+    | ToggleButtonInProgressActionType;
+
 const initialState = {
     users: [] as Array<UserType>,
     pageSize: 5,
     usersTotalCount: 0,
-    // currentPage: 1,
+    currentPage: 1,
     isFetching: false,
     buttonInProgress: [] as Array<number>
 };
 export type InitialStateType = typeof initialState;
 
-const friendsReducer = (state = initialState, action: any): InitialStateType => {
+const friendsReducer = (state = initialState, action: ActionsTypes): InitialStateType => {
     switch (action.type) {
         case ADD_FRIEND:
             return {
@@ -144,9 +145,14 @@ type GetUsersResultType = {
     totalCount: number,
     error: any
 }
+
+// type DispatchType = Dispatch<ActionsTypes>
+// type GetStateType = () => AppStateType;
+
+type ThunkActionType = ThunkAction<Promise<void>, AppStateType, unknown, ActionsTypes>;
+
 //getUsersThunkCreator
-type GetUsersThunkType = (pageSize: number, currentPage: number) => (dispatch: Function) => void
-export const getUsers: GetUsersThunkType = (pageSize, currentPage) => {
+export const getUsers = (pageSize: number, currentPage: number): ThunkActionType => {
     return async (dispatch) => {
         dispatch(toggleIsFetching(true));
         let data: GetUsersResultType = await usersAPI.getUsers(pageSize, currentPage);
@@ -156,8 +162,7 @@ export const getUsers: GetUsersThunkType = (pageSize, currentPage) => {
     }
 };
 //getUsersChangeThunkCreator
-type GetUsersChangeThunkType = (pageSize: number, pageNumber: number) => (dispatch: Function) => void
-export const getUsersChange: GetUsersChangeThunkType = (pageSize, pageNumber) => {
+export const getUsersChange = (pageSize: number, pageNumber: number): ThunkActionType => {
     return async (dispatch) => {
         // dispatch(setCurrentPage(pageNumber));
         dispatch(toggleIsFetching(true));
@@ -167,8 +172,10 @@ export const getUsersChange: GetUsersChangeThunkType = (pageSize, pageNumber) =>
     }
 };
 
-type AddRemoveFlowType = (dispatch: Function, userId: number, apiMethod: any, actionCreator: Function) => void
-const addRemoveFlow: AddRemoveFlowType = async (dispatch, userId, apiMethod, actionCreator) => {
+const _addRemoveFlow = async (dispatch: any,
+                              userId: number,
+                              apiMethod: any,
+                              actionCreator: (userId: number) => AddFriendSuccessActionType | RemoveFriendSuccessActionType) => {
     try {
         dispatch(toggleButtonInProgress(true, userId));
         let data = await apiMethod(userId);
@@ -184,19 +191,17 @@ const addRemoveFlow: AddRemoveFlowType = async (dispatch, userId, apiMethod, act
 }
 
 // removeFriendThunkCreator
-type RemoveFriendThunkType = (id: number) => (dispatch: Function) => void
-export const removeFriend: RemoveFriendThunkType = (id) => {
+export const removeFriend = (id: number): ThunkActionType => {
     return async (dispatch) => {
         let apiMethod = usersAPI.deleteFriend.bind(usersAPI);
-        addRemoveFlow(dispatch, id, apiMethod, removeFriendSuccess);
+        _addRemoveFlow(dispatch, id, apiMethod, removeFriendSuccess);
     }
 };
 // addFriendThunkCreator
-type AddFriendThunkType = (id: number) => (dispatch: Function) => void
-export const addFriend: AddFriendThunkType = (id) => {
+export const addFriend = (id: number): ThunkActionType => {
     return async (dispatch) => {
         let apiMethod = usersAPI.follow.bind(usersAPI);
-        addRemoveFlow(dispatch, id, apiMethod, addFriendSuccess);
+        _addRemoveFlow(dispatch, id, apiMethod, addFriendSuccess);
     }
 };
 
